@@ -87,7 +87,7 @@
         </div>
     </nav>
 
-    <!-- MAIN CONTENT AREA (All Views) -->
+    <!-- MAIN CONTENT AREA -->
     <main class="flex-grow pt-20">
 
         <!-- 1. HOME VIEW -->
@@ -102,7 +102,7 @@
                     Master the Curriculum from <br class="hidden md:block"/><span class="text-blue-600">Class 1 to 12</span>
                 </h1>
                 <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-10">
-                    Professional study materials, real-time mock tests, and verifiable PDF downloads. Everything you need to score 95%+.
+                    Professional study materials, real-time mock tests with dynamic questions, and verifiable PDF downloads. Everything you need to score 95%+.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16">
                     <button onclick="navigateTo('classes')" class="bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 shadow-xl transition-all">Access Portal</button>
@@ -120,8 +120,8 @@
                 </div>
                 <div class="bg-white p-8 rounded-3xl border border-slate-200 text-center hover-lift cursor-pointer" onclick="navigateTo('mcq-dashboard')">
                     <i class="fas fa-laptop-code text-4xl text-blue-600 mb-4"></i>
-                    <h3 class="text-xl font-bold mb-2">Dedicated MCQ Tests</h3>
-                    <p class="text-slate-500 text-sm">Take timed MCQs and get instant analytics.</p>
+                    <h3 class="text-xl font-bold mb-2">Randomized MCQ Tests</h3>
+                    <p class="text-slate-500 text-sm">Take timed MCQs with a dynamic question bank every time.</p>
                 </div>
                 <div class="bg-white p-8 rounded-3xl border border-slate-200 text-center hover-lift cursor-pointer" onclick="navigateTo('exams')">
                     <i class="fas fa-download text-4xl text-blue-600 mb-4"></i>
@@ -146,11 +146,8 @@
                     <button onclick="renderSubjects('11-12')" class="class-tab px-4 py-2 rounded-lg font-bold text-sm bg-slate-100 text-slate-600" data-id="11-12">Class 11-12</button>
                 </div>
             </div>
-
             <!-- Subject Grid Populated by JS -->
-            <div id="subjects-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Content injected here via JS -->
-            </div>
+            <div id="subjects-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
 
         <!-- 3. SUBJECT DEEP DIVE (Chapters) VIEW -->
@@ -169,10 +166,7 @@
                 </div>
             </div>
             <h3 class="text-2xl font-bold text-slate-900 mb-6">Chapter Index</h3>
-            <!-- Chapters Populated by JS -->
-            <div id="chapters-container" class="space-y-4">
-                <!-- Content injected here via JS -->
-            </div>
+            <div id="chapters-container" class="space-y-4"></div>
         </div>
 
         <!-- 4. VIDEO PLAYER VIEW -->
@@ -180,7 +174,6 @@
             <button onclick="navigateTo('subject')" class="flex items-center text-blue-600 font-bold mb-6 hover:underline"><i class="fas fa-arrow-left mr-2"></i> Back to Chapter List</button>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 space-y-4">
-                    <!-- Fake Video Player -->
                     <div class="bg-slate-900 rounded-2xl aspect-video relative flex flex-col justify-end overflow-hidden shadow-2xl group cursor-pointer" onclick="toggleVideo()">
                         <div id="video-overlay" class="absolute inset-0 flex items-center justify-center">
                             <i class="fas fa-play-circle text-7xl text-white opacity-80 group-hover:scale-110 transition-transform group-hover:text-blue-500"></i>
@@ -204,14 +197,13 @@
                     <h2 id="video-title" class="text-2xl md:text-3xl font-bold text-slate-900">Interactive Lecture</h2>
                     <p class="text-slate-500 font-medium">Instructor: Dr. A. Sharma • High Definition • Board Aligned</p>
                 </div>
-                <!-- Resources Sidebar -->
                 <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 h-fit">
                     <h3 class="font-bold text-lg mb-4 text-slate-900">Resources</h3>
                     <button onclick="downloadPDF('Lecture_Transcript.pdf')" class="w-full bg-white border border-slate-200 p-4 rounded-xl flex items-center justify-between hover:border-blue-600 hover:shadow-md transition-all mb-3 text-left">
                         <div class="flex items-center"><i class="fas fa-file-alt text-xl text-blue-600 mr-3"></i> <div><h4 class="font-bold text-sm">Transcript</h4><p class="text-xs text-slate-500">PDF Document</p></div></div>
                         <i class="fas fa-download text-slate-400"></i>
                     </button>
-                    <button onclick="navigateTo('quiz')" class="w-full bg-white border border-slate-200 p-4 rounded-xl flex items-center justify-between hover:border-blue-600 hover:shadow-md transition-all text-left">
+                    <button onclick="startQuiz()" class="w-full bg-white border border-slate-200 p-4 rounded-xl flex items-center justify-between hover:border-blue-600 hover:shadow-md transition-all text-left">
                         <div class="flex items-center"><i class="fas fa-question-circle text-xl text-blue-600 mr-3"></i> <div><h4 class="font-bold text-sm">Concept MCQ Quiz</h4><p class="text-xs text-slate-500">Test Knowledge</p></div></div>
                         <i class="fas fa-chevron-right text-slate-400"></i>
                     </button>
@@ -223,61 +215,60 @@
         <div id="view-mcq-dashboard" class="view-section pt-12 pb-20 px-4 max-w-7xl mx-auto">
             <div class="bg-gradient-to-r from-slate-900 to-blue-900 rounded-3xl p-8 md:p-12 text-white shadow-xl mb-12">
                 <div class="flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-6 backdrop-blur-sm">
-                    <i class="fas fa-crosshairs text-3xl text-blue-300"></i>
+                    <i class="fas fa-random text-3xl text-blue-300"></i>
                 </div>
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-4">MCQ Test Center</h1>
-                <p class="text-lg text-blue-100 max-w-2xl mb-8">Evaluate your preparation with timed Multiple Choice Questions. Select your subject below to start a high-intensity mock test.</p>
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Randomized MCQ Test Center</h1>
+                <p class="text-lg text-blue-100 max-w-2xl mb-8">Evaluate your preparation with timed Multiple Choice Questions. Every time you start a test, the system generates a new set of random questions from our massive question bank.</p>
                 <div class="flex space-x-4">
-                    <div class="flex items-center bg-white/10 px-4 py-2 rounded-lg text-sm font-medium"><i class="fas fa-clock mr-2"></i> Timed Sessions</div>
+                    <div class="flex items-center bg-white/10 px-4 py-2 rounded-lg text-sm font-medium"><i class="fas fa-sync-alt mr-2 animate-spin-slow"></i> Dynamic Generation</div>
                     <div class="flex items-center bg-white/10 px-4 py-2 rounded-lg text-sm font-medium"><i class="fas fa-award mr-2"></i> Instant Results</div>
                 </div>
             </div>
-            <h2 class="text-2xl font-bold text-slate-900 mb-6 px-2">Select a Test to Begin</h2>
-            <!-- Fixed Test Cards (HTML instead of JS map to keep it simple) -->
+            <h2 class="text-2xl font-bold text-slate-900 mb-6 px-2">Select a Topic to Generate Random Test</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Test 1 -->
-                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-blue-500 hover:shadow-lg transition-all flex flex-col cursor-pointer" onclick="startQuiz()">
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-blue-500 hover:shadow-lg transition-all flex flex-col cursor-pointer" onclick="startQuiz('Science')">
                     <div class="flex justify-between items-start mb-4">
                         <span class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">Science</span>
                         <i class="fas fa-flask text-2xl text-blue-500"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Science Core Concepts</h3>
                     <div class="flex items-center text-sm text-slate-500 mb-6 font-medium space-x-4">
-                        <span class="flex items-center"><i class="fas fa-list-ol mr-1"></i> 5 MCQs</span>
+                        <span class="flex items-center"><i class="fas fa-random mr-1 text-blue-500"></i> 5 Random MCQs</span>
                         <span class="flex items-center"><i class="fas fa-clock mr-1"></i> 5 mins</span>
                     </div>
                     <button class="w-full bg-blue-50 text-blue-700 font-bold py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-colors mt-auto flex justify-center items-center">
-                        Start Test <i class="fas fa-arrow-right ml-2"></i>
+                        Start Generated Test <i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
                 <!-- Test 2 -->
-                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-blue-500 hover:shadow-lg transition-all flex flex-col cursor-pointer" onclick="startQuiz()">
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-blue-500 hover:shadow-lg transition-all flex flex-col cursor-pointer" onclick="startQuiz('Mathematics')">
                     <div class="flex justify-between items-start mb-4">
                         <span class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">Mathematics</span>
                         <i class="fas fa-square-root-variable text-2xl text-blue-500"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Algebra & Calculus</h3>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Algebra & General Math</h3>
                     <div class="flex items-center text-sm text-slate-500 mb-6 font-medium space-x-4">
-                        <span class="flex items-center"><i class="fas fa-list-ol mr-1"></i> 5 MCQs</span>
+                        <span class="flex items-center"><i class="fas fa-random mr-1 text-blue-500"></i> 5 Random MCQs</span>
                         <span class="flex items-center"><i class="fas fa-clock mr-1"></i> 5 mins</span>
                     </div>
                     <button class="w-full bg-blue-50 text-blue-700 font-bold py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-colors mt-auto flex justify-center items-center">
-                        Start Test <i class="fas fa-arrow-right ml-2"></i>
+                        Start Generated Test <i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
                 <!-- Test 3 -->
-                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-blue-500 hover:shadow-lg transition-all flex flex-col cursor-pointer" onclick="startQuiz()">
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-blue-500 hover:shadow-lg transition-all flex flex-col cursor-pointer" onclick="startQuiz('Mixed')">
                     <div class="flex justify-between items-start mb-4">
-                        <span class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">Physics</span>
-                        <i class="fas fa-magnet text-2xl text-blue-500"></i>
+                        <span class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">Mixed GK / All Subjects</span>
+                        <i class="fas fa-globe text-2xl text-blue-500"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Physics Laws & Theories</h3>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Grand Mock Test</h3>
                     <div class="flex items-center text-sm text-slate-500 mb-6 font-medium space-x-4">
-                        <span class="flex items-center"><i class="fas fa-list-ol mr-1"></i> 5 MCQs</span>
+                        <span class="flex items-center"><i class="fas fa-random mr-1 text-blue-500"></i> 5 Random MCQs</span>
                         <span class="flex items-center"><i class="fas fa-clock mr-1"></i> 5 mins</span>
                     </div>
                     <button class="w-full bg-blue-50 text-blue-700 font-bold py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-colors mt-auto flex justify-center items-center">
-                        Start Test <i class="fas fa-arrow-right ml-2"></i>
+                        Start Generated Test <i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
             </div>
@@ -299,8 +290,9 @@
                 <div id="quiz-progress-bar" class="h-full bg-blue-500 rounded-full transition-all duration-300" style="width: 0%"></div>
             </div>
             <!-- Question Box -->
-            <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-10 shadow-lg">
-                <h3 id="quiz-question" class="text-2xl md:text-3xl font-bold text-slate-900 mb-10 leading-relaxed">Question Text</h3>
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-10 shadow-lg relative">
+                <span class="absolute top-4 right-6 text-xs font-bold text-blue-400 bg-blue-50 px-2 py-1 rounded-md" id="q-category-tag">Category</span>
+                <h3 id="quiz-question" class="text-2xl md:text-3xl font-bold text-slate-900 mb-10 mt-4 leading-relaxed">Question Text</h3>
                 <div id="quiz-options" class="space-y-4">
                     <!-- Options injected via JS -->
                 </div>
@@ -314,13 +306,13 @@
             <div class="bg-white border border-slate-200 shadow-lg rounded-3xl p-8 mb-8 relative overflow-hidden">
                 <div id="result-color-bar" class="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
                 <p class="text-slate-500 text-lg mb-2 font-medium">Your Final Score</p>
-                <p class="text-7xl font-bold text-slate-900 mb-4"><span id="result-score">0</span> <span class="text-3xl text-slate-400">/ 5</span></p>
+                <p class="text-7xl font-bold text-slate-900 mb-4"><span id="result-score">0</span> <span class="text-3xl text-slate-400" id="result-total">/ 5</span></p>
                 <div id="result-accuracy" class="inline-block bg-slate-50 px-6 py-2 rounded-full font-bold text-blue-600 border border-slate-200">
                     Accuracy: 0%
                 </div>
             </div>
             <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 justify-center">
-                <button onclick="navigateTo('mcq-dashboard')" class="bg-white border-2 border-slate-200 text-slate-900 px-8 py-4 rounded-xl font-bold hover:bg-slate-50 w-full sm:w-auto">Take Another Test</button>
+                <button onclick="navigateTo('mcq-dashboard')" class="bg-white border-2 border-slate-200 text-slate-900 px-8 py-4 rounded-xl font-bold hover:bg-slate-50 w-full sm:w-auto">Generate New Random Test</button>
                 <button onclick="navigateTo('home')" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 w-full sm:w-auto shadow-lg shadow-blue-600/20">Dashboard</button>
             </div>
         </div>
@@ -391,15 +383,80 @@
 
     <!-- PURE VANILLA JAVASCRIPT LOGIC -->
     <script>
-        // --- DATA ---
-        const dummyQuestions = [
-            { q: "What is the powerhouse of the cell?", options: ["Nucleus", "Mitochondria", "Ribosome", "Endoplasmic Reticulum"], ans: 1 },
-            { q: "Solve for x: 2x + 5 = 15", options: ["5", "10", "20", "2.5"], ans: 0 },
-            { q: "Which law states that 'For every action, there is an equal and opposite reaction'?", options: ["Newton's First Law", "Newton's Second Law", "Newton's Third Law", "Law of Gravity"], ans: 2 },
-            { q: "What is the chemical symbol for Gold?", options: ["Au", "Ag", "Fe", "Cu"], ans: 0 },
-            { q: "What is the square root of 144?", options: ["10", "12", "14", "16"], ans: 1 }
+        // --- 🚀 NEW LARGE QUESTION BANK ---
+        const allQuestionsBank = [
+            // Science / Physics / Bio / Chem
+            { category: "Science", q: "What is the powerhouse of the cell?", options: ["Nucleus", "Mitochondria", "Ribosome", "Endoplasmic Reticulum"], ans: 1 },
+            { category: "Physics", q: "Which law states that 'For every action, there is an equal and opposite reaction'?", options: ["Newton's First Law", "Newton's Second Law", "Newton's Third Law", "Law of Gravity"], ans: 2 },
+            { category: "Chemistry", q: "What is the chemical symbol for Gold?", options: ["Au", "Ag", "Fe", "Cu"], ans: 0 },
+            { category: "Science", q: "What gas do plants absorb from the atmosphere during photosynthesis?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], ans: 1 },
+            { category: "Physics", q: "What is the SI unit of Force?", options: ["Joule", "Pascal", "Watt", "Newton"], ans: 3 },
+            { category: "Chemistry", q: "What is the pH value of pure water?", options: ["0", "7", "14", "10"], ans: 1 },
+            // Mathematics
+            { category: "Mathematics", q: "Solve for x: 2x + 5 = 15", options: ["5", "10", "20", "2.5"], ans: 0 },
+            { category: "Mathematics", q: "What is the square root of 144?", options: ["10", "12", "14", "16"], ans: 1 },
+            { category: "Mathematics", q: "What is the value of Pi (approx)?", options: ["3.14", "3.12", "3.16", "3.18"], ans: 0 },
+            { category: "Mathematics", q: "If a triangle has a 90-degree angle, what is it called?", options: ["Acute Triangle", "Obtuse Triangle", "Right-angled Triangle", "Equilateral Triangle"], ans: 2 },
+            { category: "Mathematics", q: "15 × 12 = ?", options: ["150", "170", "180", "190"], ans: 2 },
+            // General / Mixed
+            { category: "GK", q: "Which is the largest planet in our solar system?", options: ["Earth", "Mars", "Jupiter", "Saturn"], ans: 2 },
+            { category: "English", q: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"], ans: 1 },
+            { category: "GK", q: "What is the capital of Australia?", options: ["Sydney", "Melbourne", "Canberra", "Perth"], ans: 2 },
+            { category: "Biology", q: "How many bones are there in an adult human body?", options: ["206", "208", "210", "212"], ans: 0 }
         ];
 
+        // --- GLOBAL STATE ---
+        let currentQuizQuestions = []; // Array to hold the randomly selected 5 questions for the current session
+        let currentQIndex = 0;
+        let quizScore = 0;
+        let timeLeft = 300; // 5 mins
+        let userLoggedIn = false;
+        let quizTimerInterval;
+        let videoInterval;
+
+        // --- NAVIGATION LOGIC ---
+        function navigateTo(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
+            
+            document.querySelectorAll('.nav-link').forEach(el => {
+                if (el.getAttribute('data-target') === viewId) {
+                    el.classList.add('text-blue-600');
+                    el.classList.remove('text-slate-500');
+                } else {
+                    el.classList.remove('text-blue-600');
+                    el.classList.add('text-slate-500');
+                }
+            });
+
+            const mobileMenu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            mobileMenu.classList.add('hidden');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+
+            if(viewId === 'classes') renderSubjects('9-10');
+            window.scrollTo(0, 0);
+
+            clearInterval(quizTimerInterval);
+            clearInterval(videoInterval);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        // --- CLASSES & SUBJECTS MOCK DATA ---
         const classesData = {
             '1-5': [
                 { name: 'Maths Magic', icon: 'fa-calculator', chapters: 12 },
@@ -429,62 +486,7 @@
             { id: 4, title: "4. Complex Problem Solving", duration: "50 mins", done: false }
         ];
 
-        // --- GLOBAL STATE ---
-        let userLoggedIn = false;
-        let quizTimerInterval;
-        let videoInterval;
-
-        // --- NAVIGATION LOGIC ---
-        function navigateTo(viewId) {
-            // Hide all views
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            // Show target view
-            document.getElementById('view-' + viewId).classList.add('active');
-            
-            // Update Navbar Active States
-            document.querySelectorAll('.nav-link').forEach(el => {
-                if (el.getAttribute('data-target') === viewId) {
-                    el.classList.add('text-blue-600');
-                    el.classList.remove('text-slate-500');
-                } else {
-                    el.classList.remove('text-blue-600');
-                    el.classList.add('text-slate-500');
-                }
-            });
-
-            // Close mobile menu if open
-            const mobileMenu = document.getElementById('mobile-menu');
-            const icon = document.getElementById('mobile-menu-icon');
-            mobileMenu.classList.add('hidden');
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
-
-            // Initial Renders for specific views
-            if(viewId === 'classes') renderSubjects('9-10');
-            window.scrollTo(0, 0);
-
-            // Cleanup any running timers
-            clearInterval(quizTimerInterval);
-            clearInterval(videoInterval);
-        }
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const icon = document.getElementById('mobile-menu-icon');
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                menu.classList.add('hidden');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
-        }
-
-        // --- CLASSES & SUBJECTS LOGIC ---
         function renderSubjects(classId) {
-            // Update Tabs UI
             document.querySelectorAll('.class-tab').forEach(el => {
                 if(el.getAttribute('data-id') === classId) {
                     el.className = 'class-tab px-4 py-2 rounded-lg font-bold text-sm bg-slate-900 text-white';
@@ -494,12 +496,11 @@
             });
 
             const container = document.getElementById('subjects-container');
-            container.innerHTML = ''; // Clear existing
+            container.innerHTML = '';
 
             classesData[classId].forEach(sub => {
                 const div = document.createElement('div');
                 div.className = 'bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all flex flex-col';
-                
                 let progressHTML = userLoggedIn ? `<span class="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">60% Done</span>` : '';
 
                 div.innerHTML = `
@@ -521,9 +522,8 @@
 
         function openSubjectDetail(name) {
             document.getElementById('subject-title').innerText = name + " Curriculum";
-            
             const container = document.getElementById('chapters-container');
-            container.innerHTML = ''; // Clear
+            container.innerHTML = '';
 
             mockChapters.forEach(chap => {
                 const div = document.createElement('div');
@@ -534,9 +534,7 @@
 
                 div.innerHTML = `
                     <div class="flex items-center space-x-4">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-xl ${iconColor}">
-                            ${iconHTML}
-                        </div>
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-xl ${iconColor}">${iconHTML}</div>
                         <div>
                             <h4 class="font-bold text-slate-900 text-lg leading-tight">${chap.title}</h4>
                             <p class="text-sm text-slate-500 flex items-center mt-1"><i class="fas fa-clock mr-1"></i> ${chap.duration}</p>
@@ -553,22 +551,17 @@
                 `;
                 container.appendChild(div);
             });
-
             navigateTo('subject');
         }
 
-        // --- VIDEO PLAYER LOGIC ---
+        // --- VIDEO LOGIC ---
         let isVideoPlaying = false;
         let videoProgress = 0;
-        
         function openVideo(title) {
             document.getElementById('video-title').innerText = title;
-            isVideoPlaying = false;
-            videoProgress = 0;
-            updateVideoUI();
-            navigateTo('video');
+            isVideoPlaying = false; videoProgress = 0;
+            updateVideoUI(); navigateTo('video');
         }
-
         function toggleVideo() {
             isVideoPlaying = !isVideoPlaying;
             if(isVideoPlaying) {
@@ -576,19 +569,12 @@
                     videoProgress += 1;
                     if(videoProgress > 100) videoProgress = 0;
                     document.getElementById('video-progress').style.width = videoProgress + '%';
-                    
                     let secs = Math.floor((videoProgress / 100) * (45 * 60));
-                    let m = Math.floor(secs / 60);
-                    let s = secs % 60;
-                    document.getElementById('video-time').innerText = 
-                        `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} / 45:00`;
+                    document.getElementById('video-time').innerText = `${Math.floor(secs / 60).toString().padStart(2,'0')}:${(secs % 60).toString().padStart(2,'0')} / 45:00`;
                 }, 1000);
-            } else {
-                clearInterval(videoInterval);
-            }
+            } else { clearInterval(videoInterval); }
             updateVideoUI();
         }
-
         function updateVideoUI() {
             if(isVideoPlaying) {
                 document.getElementById('video-overlay').classList.add('hidden');
@@ -601,18 +587,34 @@
             }
         }
 
-        // --- MCQ QUIZ LOGIC ---
-        let currentQIndex = 0;
-        let quizScore = 0;
-        let timeLeft = 300; // 5 mins
+        // --- 🚀 DYNAMIC MCQ QUIZ LOGIC ---
+        
+        function startQuiz(categoryFilter = null) {
+            showToast('Generating random question set...', 'info');
 
-        function startQuiz() {
+            // 1. Filter Questions if category is selected
+            let pool = allQuestionsBank;
+            if (categoryFilter && categoryFilter !== 'Mixed') {
+                pool = allQuestionsBank.filter(q => q.category === categoryFilter || q.category === 'Science' || q.category === 'Physics' || q.category === 'Chemistry'); // Broaden science filter
+                if(categoryFilter === 'Mathematics') pool = allQuestionsBank.filter(q => q.category === 'Mathematics');
+            }
+
+            // 2. Shuffle the array using sort and Math.random()
+            const shuffledPool = [...pool].sort(() => 0.5 - Math.random());
+
+            // 3. Slice the top 5 questions for this session
+            currentQuizQuestions = shuffledPool.slice(0, 5);
+
+            // 4. Reset Quiz States
             currentQIndex = 0;
             quizScore = 0;
-            timeLeft = 300;
-            navigateTo('quiz');
+            timeLeft = 300; // 5 mins
+            
+            // Render first question
             renderQuestion();
+            navigateTo('quiz');
 
+            // Start Timer
             quizTimerInterval = setInterval(() => {
                 timeLeft--;
                 if(timeLeft <= 0) {
@@ -627,10 +629,11 @@
         }
 
         function renderQuestion() {
-            const q = dummyQuestions[currentQIndex];
-            document.getElementById('quiz-counter').innerHTML = `Question ${currentQIndex + 1} <span class="text-slate-400">of ${dummyQuestions.length}</span>`;
+            const q = currentQuizQuestions[currentQIndex]; // Fetch from new random array
+            document.getElementById('quiz-counter').innerHTML = `Question ${currentQIndex + 1} <span class="text-slate-400">of ${currentQuizQuestions.length}</span>`;
             document.getElementById('quiz-question').innerText = q.q;
-            document.getElementById('quiz-progress-bar').style.width = ((currentQIndex) / dummyQuestions.length) * 100 + '%';
+            document.getElementById('q-category-tag').innerText = q.category; // Show category
+            document.getElementById('quiz-progress-bar').style.width = ((currentQIndex) / currentQuizQuestions.length) * 100 + '%';
 
             const optsContainer = document.getElementById('quiz-options');
             optsContainer.innerHTML = '';
@@ -646,33 +649,36 @@
         }
 
         function handleAnswer(selectedIndex, btnElement) {
-            // UI Feedback
-            document.querySelectorAll('.opt-btn').forEach(btn => btn.style.pointerEvents = 'none'); // disable clicks
+            document.querySelectorAll('.opt-btn').forEach(btn => btn.style.pointerEvents = 'none'); 
+            
+            // Highlight selected
             btnElement.classList.replace('border-slate-100', 'border-blue-600');
             btnElement.classList.replace('hover:bg-slate-50', 'bg-blue-50');
             btnElement.querySelector('.opt-label').classList.replace('bg-slate-100', 'bg-blue-600');
             btnElement.querySelector('.opt-label').classList.replace('text-slate-500', 'text-white');
 
-            // Logic
-            if(selectedIndex === dummyQuestions[currentQIndex].ans) {
+            // Check correctness
+            if(selectedIndex === currentQuizQuestions[currentQIndex].ans) {
                 quizScore++;
             }
 
+            // Move to next question after small delay
             setTimeout(() => {
                 currentQIndex++;
-                if(currentQIndex < dummyQuestions.length) {
+                if(currentQIndex < currentQuizQuestions.length) {
                     renderQuestion();
                 } else {
                     finishQuiz();
                 }
-            }, 500);
+            }, 600); // 0.6 seconds delay to show what user clicked
         }
 
         function finishQuiz() {
             clearInterval(quizTimerInterval);
             document.getElementById('result-score').innerText = quizScore;
+            document.getElementById('result-total').innerText = `/ ${currentQuizQuestions.length}`;
             
-            let accuracy = (quizScore / dummyQuestions.length) * 100;
+            let accuracy = (quizScore / currentQuizQuestions.length) * 100;
             document.getElementById('result-accuracy').innerText = `Accuracy: ${accuracy}%`;
             
             const colorBar = document.getElementById('result-color-bar');
@@ -683,16 +689,10 @@
             navigateTo('quiz-result');
         }
 
-        // --- UTILITIES (Login, Toast, PDF Download) ---
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
-            document.getElementById(id).classList.remove('hidden');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
+        // --- UTILITIES ---
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
         function showToast(msg, type='success') {
             const toast = document.getElementById('toast-container');
             const toastBody = document.getElementById('toast-body');
@@ -703,19 +703,13 @@
             else toastBody.className = 'px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3 text-white bg-red-600';
 
             toast.classList.remove('translate-y-20', 'opacity-0');
-            
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
         }
 
         function handleLogin(e) {
             e.preventDefault();
-            userLoggedIn = true;
-            closeModal('login-modal');
+            userLoggedIn = true; closeModal('login-modal');
             showToast('Authentication Successful! Access Granted.');
-            
-            // Update UI
             const userHTML = `
                 <div class="flex items-center space-x-2 bg-slate-50 px-4 py-2 rounded-full border border-slate-200">
                     <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold"><i class="fas fa-user"></i></div>
@@ -731,37 +725,20 @@
         }
 
         function handleLogout() {
-            userLoggedIn = false;
-            showToast('Logged out successfully.', 'info');
-            
-            const btnHTMLDesktop = `
-                <button onclick="openModal('login-modal')" class="text-slate-600 font-bold hover:text-slate-900 px-4 py-2">Sign In</button>
-                <button onclick="openModal('login-modal')" class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all">Enroll Free</button>
-            `;
-            const btnHTMLMobile = `
-                <button onclick="openModal('login-modal')" class="w-full border-2 border-slate-200 text-slate-900 font-bold py-3 rounded-xl mb-3">Sign In</button>
-                <button onclick="openModal('login-modal')" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl">Enroll Free</button>
-            `;
-            
+            userLoggedIn = false; showToast('Logged out successfully.', 'info');
+            const btnHTMLDesktop = `<button onclick="openModal('login-modal')" class="text-slate-600 font-bold hover:text-slate-900 px-4 py-2">Sign In</button><button onclick="openModal('login-modal')" class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all">Enroll Free</button>`;
+            const btnHTMLMobile = `<button onclick="openModal('login-modal')" class="w-full border-2 border-slate-200 text-slate-900 font-bold py-3 rounded-xl mb-3">Sign In</button><button onclick="openModal('login-modal')" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl">Enroll Free</button>`;
             document.getElementById('auth-desktop').innerHTML = btnHTMLDesktop;
             document.getElementById('auth-mobile').innerHTML = btnHTMLMobile;
-            
             navigateTo('home');
         }
 
-        // Real PDF Generation (Base64)
         function downloadPDF(fileName) {
             showToast(`Generating and downloading ${fileName}...`, 'info');
             const base64PDF = "JVBERi0xLjAKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3ggWzAgMCA1OTUgODQyXQovUmVzb3VyY2VzIDw8Ci9Gb250IDw8Ci9GMSA0IDAgUgo+Pgo+PgovQ29udGVudHMgNSAwIFIKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL1R5cGUgL0ZvbnQKL1N1YnR5cGUgL1R5cGUxCi9CYXNlRm9udCAvSGVsdmV0aWNhCj4+CmVuZG9iago1IDAgb2JqCjw8Ci9MZW5ndGggNDQKPj4Kc3RyZWFtCkJUCjEvRjEgMjQgVGYKMTAwIDcwMCBUZAooRWR1UHJvIFNhbXBsZSBQREYpIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDEwIDAwMDAwIG4gCjAwMDAwMDAwNjAgMDAwMDAgbiAKMDAwMDAwMDExNyAwMDAwMCBuIAowMDAwMDAwMjE1IDAwMDAwIG4gCjAwMDAwMDAzMDMgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSA2Ci9Sb290IDEgMCBSCj4+CnN0YXJ0eHJlZgozOTcKJSVFT0YK";
             const dataUri = `data:application/pdf;base64,${base64PDF}`;
-            
-            const link = document.createElement('a');
-            link.href = dataUri;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
+            const link = document.createElement('a'); link.href = dataUri; link.download = fileName;
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
             setTimeout(() => showToast(`${fileName} downloaded successfully!`, 'success'), 1000);
         }
     </script>
