@@ -3,51 +3,983 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download File</title>
+    <title>EduPro - Premium Learning Platform (Class 1-12)</title>
+    
+    <!-- Google Fonts: Poppins for a premium, clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Hardcore Custom CSS Yahan Se Shuru -->
     <style>
-        /* Basic reset aur dark theme setup */
-        body {
+        /* CSS Variables - Color Theme aur Settings */
+        :root {
+            --primary-color: #0056b3; /* Professional Deep Blue */
+            --primary-light: #e6f0fa;
+            --accent-color: #00d2ff;
+            --text-dark: #1a1a1a;
+            --text-muted: #666666;
+            --bg-pure-white: #ffffff;
+            --bg-off-white: #f8f9fa;
+            --border-color: #eaeaea;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
+            --transition-speed: 0.3s;
+            --font-main: 'Poppins', sans-serif;
+        }
+
+        /* Basic Reset - Taki har browser me same dikhe */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #0a0a0a; /* Deep black theme */
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+            font-family: var(--font-main);
         }
 
-        /* Button styling */
-        .open-button {
-            background-color: #ffffff; /* White button for contrast */
-            color: #000000;
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-pure-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar - Khatarnak Look Ke Liye */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-off-white);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cccccc;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* Container - Content ko center me rakhne ke liye */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        a {
             text-decoration: none;
+            color: inherit;
+            transition: color var(--transition-speed) ease;
+        }
+
+        /* Buttons Styling */
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            border: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--bg-pure-white);
+            box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: #004494;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 86, 179, 0.4);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-dark);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-dark);
+            background-color: var(--bg-off-white);
+        }
+
+        /* Header & Navbar - Glassmorphism Effect */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
             font-size: 24px;
-            font-weight: bold;
-            padding: 15px 50px;
-            border-radius: 8px;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+            font-weight: 800;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Hover effect */
-        .open-button:hover {
-            background-color: #e0e0e0;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
         }
 
-        /* Click effect */
-        .open-button:active {
-            transform: translateY(1px);
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links li a {
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .nav-links li a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-glow {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(0,86,179,0.05) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span {
+            color: var(--primary-color);
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Search Form (Class/Subject selector) */
+        .search-box {
+            background: var(--bg-pure-white);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            max-width: 800px;
+            margin: 60px auto 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-off-white);
+            font-size: 15px;
+            outline: none;
+            color: var(--text-dark);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            background: var(--bg-pure-white);
+        }
+
+        .search-btn {
+            padding: 12px 30px;
+            border-radius: 10px;
+        }
+
+        /* Section Global Styles */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Grid System */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        /* Feature Cards - Extreme Professional Look */
+        .card {
+            background: var(--bg-pure-white);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+            z-index: 2;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+            border-color: transparent;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 25px;
+            transition: var(--transition-speed);
+        }
+
+        .card:hover .card-icon {
+            background: var(--primary-color);
+            color: var(--bg-pure-white);
+        }
+
+        .card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-link i {
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+
+        .card-link:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Class Categories Grid */
+        .class-box {
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            background: var(--bg-pure-white);
+            transition: var(--transition-speed);
+            cursor: pointer;
+        }
+
+        .class-box:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+            transform: translateY(-5px);
+        }
+
+        .class-box i {
+            font-size: 36px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            transition: var(--transition-speed);
+        }
+
+        .class-box:hover i {
+            color: var(--primary-color);
+        }
+
+        .class-box h4 {
+            font-size: 18px;
+            color: var(--text-dark);
+        }
+
+        /* Revision & Exams Section */
+        .bg-gray-section {
+            background-color: var(--bg-off-white);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .exam-card {
+            background: var(--bg-pure-white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-speed);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exam-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-5px);
+        }
+
+        .exam-header {
+            padding: 25px 25px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tag {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .tag.hot { background: #fee2e2; color: #ef4444; }
+        .tag.essential { background: #e0e7ff; color: #4f46e5; }
+        .tag.practice { background: #dcfce7; color: #22c55e; }
+
+        .exam-body {
+            padding: 20px 25px 30px;
+            flex-grow: 1;
+        }
+
+        .exam-body h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .exam-body p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .exam-list {
+            list-style: none;
+        }
+
+        .exam-list li {
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exam-list li i {
+            color: #22c55e;
+            font-size: 12px;
+        }
+
+        .exam-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border-color);
+            background: #fafafa;
+        }
+
+        .exam-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-pure-white);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-speed);
+        }
+
+        .exam-btn:hover {
+            background: var(--text-dark);
+            color: var(--bg-pure-white);
+            border-color: var(--text-dark);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--text-dark);
+            color: var(--bg-pure-white);
+            text-align: center;
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .cta-section h2 {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: var(--bg-pure-white);
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            color: #a1a1aa;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-white {
+            background: var(--bg-pure-white);
+            color: var(--text-dark);
+        }
+        
+        .btn-white:hover {
+            background: #f4f4f5;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-pure-white);
+            padding: 80px 0 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-about p {
+            color: var(--text-muted);
+            margin: 20px 0;
+            font-size: 14px;
+            max-width: 300px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-off-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+
+        .social-icons a:hover {
+            background: var(--primary-color);
+            color: var(--bg-pure-white);
+            border-color: var(--primary-color);
+        }
+
+        .footer-links h4 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links ul li a {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .footer-links ul li a:hover {
+            color: var(--primary-color);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border-color);
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Mobile Responsive Media Queries - Phone pe kaisa dikhega */
+        @media (max-width: 991px) {
+            .grid-3, .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .hero h1 { font-size: 42px; }
+            .search-box { flex-direction: column; }
+            .footer-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .nav-actions .btn-outline {
+                display: none; /* Hide desktop menu on mobile */
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .grid-3, .grid-4, .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero { padding: 140px 0 60px; }
+            .hero h1 { font-size: 32px; }
+            .hero-buttons { flex-direction: column; }
+            .search-box { margin-top: 40px; }
+            .footer-bottom { flex-direction: column; text-align: center; gap: 15px; }
+            
+            /* Mobile Menu Active State */
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background: var(--bg-pure-white);
+                padding: 20px;
+                border-bottom: 1px solid var(--border-color);
+                box-shadow: var(--shadow-md);
+            }
         }
     </style>
 </head>
 <body>
 
-    <a href="https://www.mediafire.com/file/saz926nta8h6t4a/ASIF_GAMING_ALL_FILE%25F0%259F%2591%258D.zip/file" class="open-button">OPEN</a>
+    <!-- Header & Navigation Bar -->
+    <header id="header">
+        <div class="container navbar">
+            <!-- Logo Section -->
+            <a href="#" class="logo">
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                EduPro<span style="color: var(--primary-color);">.</span>
+            </a>
 
+            <!-- Desktop Menu Links -->
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#classes">Classes 1-12</a></li>
+                <li><a href="#materials">Study Materials</a></li>
+                <li><a href="#revision">Exams & Revision</a></li>
+            </ul>
+
+            <!-- Buttons -->
+            <div class="nav-actions">
+                <button class="btn btn-outline">Log In</button>
+                <button class="btn btn-primary" style="display: none; /* Hidden on very small screens */ @media(min-width: 400px){display: block;}">Sign Up</button>
+                <!-- Mobile Hamburger Icon -->
+                <button class="mobile-menu-btn" id="mobileBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Hero Section - First Impression -->
+    <section class="hero" id="home">
+        <div class="hero-bg-glow"></div>
+        <div class="container">
+            <span class="badge"><i class="fas fa-star" style="color: #fbbf24; margin-right: 5px;"></i> #1 Learning Platform for Boards</span>
+            <h1>Master Your Subjects from <br><span>Class 1 to 12</span></h1>
+            <p>The ultimate white-themed, professional learning platform. Get premium study materials, extreme revision notes, and highly accurate exam papers for Mathematics, Science, and more.</p>
+            
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Start Learning Now</button>
+                <button class="btn btn-outline"><i class="fas fa-play-circle" style="margin-right: 8px;"></i> Watch Demo</button>
+            </div>
+
+            <!-- Custom Search Bar / Filter -->
+            <div class="search-box">
+                <select class="search-input">
+                    <option value="">Select Your Class...</option>
+                    <option value="1-5">Primary (Class 1 - 5)</option>
+                    <option value="6-8">Middle (Class 6 - 8)</option>
+                    <option value="9-10">Secondary (Class 9 - 10)</option>
+                    <option value="11-12">Senior Sec. (Class 11 - 12)</option>
+                </select>
+                <select class="search-input">
+                    <option value="">Select Subject...</option>
+                    <option value="math">Mathematics</option>
+                    <option value="science">Science (Phy/Chem/Bio)</option>
+                    <option value="english">English Core</option>
+                </select>
+                <button class="btn btn-primary search-btn"><i class="fas fa-search"></i> Find</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Features Section -->
+    <section class="section bg-gray-section" id="materials">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose EduPro?</h2>
+                <p>We provide extreme level clarity for complex subjects. Built by toppers, verified by expert teachers.</p>
+            </div>
+
+            <div class="grid-3">
+                <!-- Feature 1 -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-book-open"></i></div>
+                    <h3>NCERT Solutions</h3>
+                    <p>Complete, step-by-step verified solutions for all NCERT textbooks from class 6 to 12. Never get stuck on a question again.</p>
+                    <a href="#" class="card-link">Explore Solutions <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Feature 2 -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-microscope"></i></div>
+                    <h3>Concept Videos</h3>
+                    <p>High-quality animated videos for Physics and Chemistry to visualize concepts before you memorize them.</p>
+                    <a href="#" class="card-link">Watch Videos <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Feature 3 -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-laptop-code"></i></div>
+                    <h3>Live Doubt Solving</h3>
+                    <p>Stuck at 2 AM? Our 24/7 expert tutors are online to solve your math problems instantly with detailed steps.</p>
+                    <a href="#" class="card-link">Ask a Doubt <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Classes Categorization Section -->
+    <section class="section" id="classes">
+        <div class="container">
+            <div class="section-header">
+                <h2>Structured Curriculum</h2>
+                <p>Select your class group to access specific syllabus, textbooks, and targeted board exam preparations.</p>
+            </div>
+
+            <div class="grid-4">
+                <div class="class-box">
+                    <i class="fas fa-child"></i>
+                    <h4>Class 1 - 5</h4>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Basics & Foundation</p>
+                </div>
+                <div class="class-box">
+                    <i class="fas fa-school"></i>
+                    <h4>Class 6 - 8</h4>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Middle School Level</p>
+                </div>
+                <div class="class-box">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h4>Class 9 - 10</h4>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Board Preparation</p>
+                </div>
+                <div class="class-box">
+                    <i class="fas fa-user-graduate"></i>
+                    <h4>Class 11 - 12</h4>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">JEE/NEET & Boards</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Extreme Revision & Exam Section -->
+    <section class="section bg-gray-section" id="revision">
+        <div class="container">
+            <div class="section-header">
+                <h2>Extreme Revision Center</h2>
+                <p>The night before the exam? We've got you covered. Quick summaries, master formulas, and previous papers.</p>
+            </div>
+
+            <div class="grid-3">
+                <!-- Revision Card 1 -->
+                <div class="exam-card">
+                    <div class="exam-header">
+                        <span class="tag hot">CRITICAL</span>
+                        <i class="fas fa-bolt text-muted"></i>
+                    </div>
+                    <div class="exam-body">
+                        <h3>15-Minute Recaps</h3>
+                        <p>Bullet-point summaries of every chapter. Perfect for waiting-outside-exam-hall revision.</p>
+                        <ul class="exam-list">
+                            <li><i class="fas fa-check"></i> Math theorems simplified</li>
+                            <li><i class="fas fa-check"></i> Science definitions highlighted</li>
+                        </ul>
+                    </div>
+                    <div class="exam-footer">
+                        <button class="exam-btn">Read Summaries</button>
+                    </div>
+                </div>
+
+                <!-- Revision Card 2 -->
+                <div class="exam-card">
+                    <div class="exam-header">
+                        <span class="tag essential">DOWNLOADS</span>
+                        <i class="fas fa-file-pdf text-muted"></i>
+                    </div>
+                    <div class="exam-body">
+                        <h3>Master Formula Sheets</h3>
+                        <p>One-page cheat sheets containing all formulas of Algebra, Calculus, and Physics.</p>
+                        <ul class="exam-list">
+                            <li><i class="fas fa-check"></i> High-res printable PDFs</li>
+                            <li><i class="fas fa-check"></i> Topic-wise categorization</li>
+                        </ul>
+                    </div>
+                    <div class="exam-footer">
+                        <button class="exam-btn">Download PDF</button>
+                    </div>
+                </div>
+
+                <!-- Revision Card 3 -->
+                <div class="exam-card">
+                    <div class="exam-header">
+                        <span class="tag practice">PRACTICE</span>
+                        <i class="fas fa-pen-nib text-muted"></i>
+                    </div>
+                    <div class="exam-body">
+                        <h3>Previous 10 Yr Papers</h3>
+                        <p>Actual board exam papers (CBSE/ICSE) fully solved by strict marking scheme experts.</p>
+                        <ul class="exam-list">
+                            <li><i class="fas fa-check"></i> Step marking details</li>
+                            <li><i class="fas fa-check"></i> Most repeated questions</li>
+                        </ul>
+                    </div>
+                    <div class="exam-footer">
+                        <button class="exam-btn" style="background: var(--text-dark); color: white; border-color: var(--text-dark);">Start Solving</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Banner -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to become a Topper?</h2>
+            <p>Join over 200,000+ smart students who have upgraded their study methods with EduPro's professional materials.</p>
+            <button class="btn btn-white btn">Create Free Account</button>
+        </div>
+    </section>
+
+    <!-- Professional Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <a href="#" class="logo" style="font-size: 20px;">
+                        <div class="logo-icon" style="width:30px; height:30px; font-size:14px;"><i class="fas fa-graduation-cap"></i></div>
+                        EduPro<span style="color: var(--primary-color);">.</span>
+                    </a>
+                    <p>The premium, white-themed educational platform providing top-tier academic resources for classes 1 to 12 across India.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Academics</h4>
+                    <ul>
+                        <li><a href="#">Class 11 & 12</a></li>
+                        <li><a href="#">Class 9 & 10</a></li>
+                        <li><a href="#">Class 6 to 8</a></li>
+                        <li><a href="#">NCERT Books</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Exam Prep</h4>
+                    <ul>
+                        <li><a href="#">Mock Tests</a></li>
+                        <li><a href="#">Previous Papers</a></li>
+                        <li><a href="#">Formula Sheets</a></li>
+                        <li><a href="#">Syllabus 2026</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 EduPro Learning. All rights reserved.</p>
+                <p>Designed for Extreme Success</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Functions -->
+    <script>
+        // Yahan par Mobile Menu ko open/close karne ka code hai
+        const mobileBtn = document.getElementById('mobileBtn');
+        const navLinks = document.getElementById('navLinks');
+        const icon = mobileBtn.querySelector('i');
+
+        mobileBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            // Icon change from Bars to Cross (X)
+            if(navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Sticky Navbar par Shadow add karna jab page scroll ho
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
+
 
