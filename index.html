@@ -1,985 +1,621 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduPro - Premium Learning Platform (Class 1-12)</title>
+import React, { useState, useEffect } from 'react';
+import { 
+  BookOpen, Search, Menu, X, PlayCircle, Star, 
+  Microscope, Laptop, User, ChevronRight, FileText, 
+  Download, Clock, PenTool, CheckCircle, LogOut, 
+  FileQuestion, Calculator, Leaf, Library, PenBox, 
+  Ruler, Globe, Book, Zap, FlaskConical, Dna, 
+  Landmark, Telescope, Beaker, Sigma, Monitor,
+  PauseCircle, CheckSquare, BarChart, ArrowLeft, MessageCircle,
+  Target, Award
+} from 'lucide-react';
+
+// --- MOCK DATA FOR EVERYTHING ---
+const dummyQuestions = [
+  { q: "What is the powerhouse of the cell?", options: ["Nucleus", "Mitochondria", "Ribosome", "Endoplasmic Reticulum"], ans: 1 },
+  { q: "Solve for x: 2x + 5 = 15", options: ["5", "10", "20", "2.5"], ans: 0 },
+  { q: "Which law states that For every action, there is an equal and opposite reaction?", options: ["Newton's First Law", "Newton's Second Law", "Newton's Third Law", "Law of Gravity"], ans: 2 },
+  { q: "What is the chemical symbol for Gold?", options: ["Au", "Ag", "Fe", "Cu"], ans: 0 },
+  { q: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"], ans: 1 }
+];
+
+const mockChapters = [
+  { id: 1, title: "1. Fundamentals & Introduction", duration: "45 mins", isCompleted: true },
+  { id: 2, title: "2. Core Principles & Theories", duration: "55 mins", isCompleted: true },
+  { id: 3, title: "3. Advanced Applications", duration: "1 hr 10 mins", isCompleted: false },
+  { id: 4, title: "4. Complex Problem Solving", duration: "50 mins", isCompleted: false },
+  { id: 5, title: "5. Final Chapter Revision", duration: "30 mins", isCompleted: false },
+];
+
+const curriculumData = {
+  '1-5': { 
+    title: 'Primary (Class 1-5)', desc: 'Foundation building with interactive modules and basic mathematics.',
+    subjects: [
+      { id: 'm1', name: 'Maths Magic', icon: Calculator, chapters: 12, progress: 40 },
+      { id: 'e1', name: 'Environmental Studies', icon: Leaf, chapters: 15, progress: 20 },
+    ]
+  },
+  '9-10': { 
+    title: 'Secondary (Class 9-10)', desc: 'Strict board exam preparation with NCERT focus and sample papers.',
+    subjects: [
+      { id: 'm9', name: 'Mathematics', icon: Sigma, chapters: 15, progress: 60 },
+      { id: 'p9', name: 'Physics', icon: Zap, chapters: 7, progress: 90 },
+      { id: 'c9', name: 'Chemistry', icon: FlaskConical, chapters: 6, progress: 30 },
+    ]
+  },
+  '11-12': { 
+    title: 'Senior Sec. (Class 11-12)', desc: 'Extreme level preparation for Board Exams, JEE, and NEET.',
+    subjects: [
+      { id: 'p11', name: 'Physics (Vol 1 & 2)', icon: Telescope, chapters: 14, progress: 10 },
+      { id: 'm11', name: 'Mathematics', icon: Sigma, chapters: 13, progress: 40 },
+    ]
+  }
+};
+
+export default function App() {
+  // --- STATE MANAGEMENT ---
+  // Routing states
+  const [currentView, setCurrentView] = useState('home'); // home, classes, subject, video, mcq-dashboard, quiz, exams
+  const [selectedClass, setSelectedClass] = useState('9-10');
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [selectedChapter, setSelectedChapter] = useState(null);
+  
+  // UI states
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [modalType, setModalType] = useState(null); 
+  const [toast, setToast] = useState(null);
+
+  // --- HELPER FUNCTIONS ---
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const handleAuth = (e) => {
+    e.preventDefault();
+    setUser({ name: 'Student Scholar', id: 'EP-2026-8942', progress: 68 });
+    setModalType(null);
+    showToast('Authentication Successful! Access Granted.');
+  };
+
+  const navigateTo = (view, classId = null, subject = null, chapter = null) => {
+    if (classId) setSelectedClass(classId);
+    if (subject) setSelectedSubject(subject);
+    if (chapter) setSelectedChapter(chapter);
+    setCurrentView(view);
+    window.scrollTo(0, 0);
+    setIsMobileMenuOpen(false); // Mobile menu band karne ke liye
+  };
+
+  // REAL PDF DOWNLOAD GENERATOR
+  const downloadRealPDF = (fileName) => {
+    showToast(`Generating and downloading ${fileName}...`, 'info');
+    const base64PDF = "JVBERi0xLjAKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3ggWzAgMCA1OTUgODQyXQovUmVzb3VyY2VzIDw8Ci9Gb250IDw8Ci9GMSA0IDAgUgo+Pgo+PgovQ29udGVudHMgNSAwIFIKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL1R5cGUgL0ZvbnQKL1N1YnR5cGUgL1R5cGUxCi9CYXNlRm9udCAvSGVsdmV0aWNhCj4+CmVuZG9iago1IDAgb2JqCjw8Ci9MZW5ndGggNDQKPj4Kc3RyZWFtCkJUCjEvRjEgMjQgVGYKMTAwIDcwMCBUZAooRWR1UHJvIFNhbXBsZSBQREYpIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDYKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDEwIDAwMDAwIG4gCjAwMDAwMDAwNjAgMDAwMDAgbiAKMDAwMDAwMDExNyAwMDAwMCBuIAowMDAwMDAwMjE1IDAwMDAwIG4gCjAwMDAwMDAzMDMgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSA2Ci9Sb290IDEgMCBSCj4+CnN0YXJ0eHJlZgozOTcKJSVFT0YK";
+    const dataUri = `data:application/pdf;base64,${base64PDF}`;
     
-    <!-- Google Fonts: Poppins for a premium, clean look -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    const link = document.createElement('a');
+    link.href = dataUri;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Hardcore Custom CSS Yahan Se Shuru -->
-    <style>
-        /* CSS Variables - Color Theme aur Settings */
-        :root {
-            --primary-color: #0056b3; /* Professional Deep Blue */
-            --primary-light: #e6f0fa;
-            --accent-color: #00d2ff;
-            --text-dark: #1a1a1a;
-            --text-muted: #666666;
-            --bg-pure-white: #ffffff;
-            --bg-off-white: #f8f9fa;
-            --border-color: #eaeaea;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
-            --shadow-lg: 0 20px 40px rgba(0,0,0,0.12);
-            --transition-speed: 0.3s;
-            --font-main: 'Poppins', sans-serif;
-        }
-
-        /* Basic Reset - Taki har browser me same dikhe */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: var(--font-main);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg-pure-white);
-            color: var(--text-dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Custom Scrollbar - Khatarnak Look Ke Liye */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-off-white);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cccccc;
-            border-radius: 5px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-color);
-        }
-
-        /* Container - Content ko center me rakhne ke liye */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Typography */
-        h1, h2, h3, h4 {
-            font-weight: 700;
-            line-height: 1.2;
-        }
-        
-        a {
-            text-decoration: none;
-            color: inherit;
-            transition: color var(--transition-speed) ease;
-        }
-
-        /* Buttons Styling */
-        .btn {
-            display: inline-block;
-            padding: 12px 28px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all var(--transition-speed) ease;
-            border: none;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: var(--bg-pure-white);
-            box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3);
-        }
-
-        .btn-primary:hover {
-            background-color: #004494;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 86, 179, 0.4);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--text-dark);
-            border: 2px solid var(--border-color);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--text-dark);
-            background-color: var(--bg-off-white);
-        }
-
-        /* Header & Navbar - Glassmorphism Effect */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            transition: all var(--transition-speed) ease;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .nav-links li a {
-            font-weight: 500;
-            color: var(--text-muted);
-            font-size: 15px;
-        }
-
-        .nav-links li a:hover {
-            color: var(--primary-color);
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            font-size: 24px;
-            background: none;
-            border: none;
-            color: var(--text-dark);
-            cursor: pointer;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 180px 0 100px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-bg-glow {
-            position: absolute;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(0,86,179,0.05) 0%, rgba(255,255,255,0) 70%);
-            z-index: -1;
-            border-radius: 50%;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 6px 16px;
-            background: var(--primary-light);
-            color: var(--primary-color);
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
-        }
-
-        .hero h1 {
-            font-size: 56px;
-            color: var(--text-dark);
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
-
-        .hero h1 span {
-            color: var(--primary-color);
-        }
-
-        .hero p {
-            font-size: 18px;
-            color: var(--text-muted);
-            max-width: 700px;
-            margin: 0 auto 40px;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        /* Search Form (Class/Subject selector) */
-        .search-box {
-            background: var(--bg-pure-white);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 16px;
-            box-shadow: var(--shadow-md);
-            max-width: 800px;
-            margin: 60px auto 0;
-            display: flex;
-            gap: 10px;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 12px 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            background: var(--bg-off-white);
-            font-size: 15px;
-            outline: none;
-            color: var(--text-dark);
-        }
-
-        .search-input:focus {
-            border-color: var(--primary-color);
-            background: var(--bg-pure-white);
-        }
-
-        .search-btn {
-            padding: 12px 30px;
-            border-radius: 10px;
-        }
-
-        /* Section Global Styles */
-        .section {
-            padding: 100px 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-header h2 {
-            font-size: 36px;
-            margin-bottom: 15px;
-        }
-
-        .section-header p {
-            color: var(--text-muted);
-            font-size: 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Grid System */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        .grid-4 {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-        }
-
-        /* Feature Cards - Extreme Professional Look */
-        .card {
-            background: var(--bg-pure-white);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 40px 30px;
-            transition: var(--transition-speed) ease;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--primary-color);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
-            z-index: 2;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-lg);
-            border-color: transparent;
-        }
-
-        .card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .card-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--primary-light);
-            color: var(--primary-color);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 25px;
-            transition: var(--transition-speed);
-        }
-
-        .card:hover .card-icon {
-            background: var(--primary-color);
-            color: var(--bg-pure-white);
-        }
-
-        .card h3 {
-            font-size: 22px;
-            margin-bottom: 15px;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            font-size: 15px;
-            margin-bottom: 20px;
-        }
-
-        .card-link {
-            color: var(--primary-color);
-            font-weight: 600;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-link i {
-            font-size: 12px;
-            transition: transform 0.3s;
-        }
-
-        .card-link:hover i {
-            transform: translateX(5px);
-        }
-
-        /* Class Categories Grid */
-        .class-box {
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 30px 20px;
-            text-align: center;
-            background: var(--bg-pure-white);
-            transition: var(--transition-speed);
-            cursor: pointer;
-        }
-
-        .class-box:hover {
-            border-color: var(--primary-color);
-            background: var(--primary-light);
-            transform: translateY(-5px);
-        }
-
-        .class-box i {
-            font-size: 36px;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            transition: var(--transition-speed);
-        }
-
-        .class-box:hover i {
-            color: var(--primary-color);
-        }
-
-        .class-box h4 {
-            font-size: 18px;
-            color: var(--text-dark);
-        }
-
-        /* Revision & Exams Section */
-        .bg-gray-section {
-            background-color: var(--bg-off-white);
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .exam-card {
-            background: var(--bg-pure-white);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition-speed);
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .exam-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-5px);
-        }
-
-        .exam-header {
-            padding: 25px 25px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .tag {
-            font-size: 12px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 4px;
-            letter-spacing: 1px;
-        }
-
-        .tag.hot { background: #fee2e2; color: #ef4444; }
-        .tag.essential { background: #e0e7ff; color: #4f46e5; }
-        .tag.practice { background: #dcfce7; color: #22c55e; }
-
-        .exam-body {
-            padding: 20px 25px 30px;
-            flex-grow: 1;
-        }
-
-        .exam-body h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .exam-body p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .exam-list {
-            list-style: none;
-        }
-
-        .exam-list li {
-            font-size: 14px;
-            color: var(--text-dark);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .exam-list li i {
-            color: #22c55e;
-            font-size: 12px;
-        }
-
-        .exam-footer {
-            padding: 20px 25px;
-            border-top: 1px solid var(--border-color);
-            background: #fafafa;
-        }
-
-        .exam-btn {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-pure-white);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-speed);
-        }
-
-        .exam-btn:hover {
-            background: var(--text-dark);
-            color: var(--bg-pure-white);
-            border-color: var(--text-dark);
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: var(--text-dark);
-            color: var(--bg-pure-white);
-            text-align: center;
-            padding: 80px 0;
-            position: relative;
-        }
-
-        .cta-section h2 {
-            font-size: 40px;
-            margin-bottom: 20px;
-            color: var(--bg-pure-white);
-        }
-
-        .cta-section p {
-            font-size: 18px;
-            color: #a1a1aa;
-            margin-bottom: 40px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .btn-white {
-            background: var(--bg-pure-white);
-            color: var(--text-dark);
-        }
-        
-        .btn-white:hover {
-            background: #f4f4f5;
-            transform: translateY(-2px);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--bg-pure-white);
-            padding: 80px 0 30px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .footer-about p {
-            color: var(--text-muted);
-            margin: 20px 0;
-            font-size: 14px;
-            max-width: 300px;
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-icons a {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--bg-off-white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-        }
-
-        .social-icons a:hover {
-            background: var(--primary-color);
-            color: var(--bg-pure-white);
-            border-color: var(--primary-color);
-        }
-
-        .footer-links h4 {
-            font-size: 16px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .footer-links ul {
-            list-style: none;
-        }
-
-        .footer-links ul li {
-            margin-bottom: 12px;
-        }
-
-        .footer-links ul li a {
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .footer-links ul li a:hover {
-            color: var(--primary-color);
-            padding-left: 5px;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid var(--border-color);
-            padding-top: 30px;
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        /* Mobile Responsive Media Queries - Phone pe kaisa dikhega */
-        @media (max-width: 991px) {
-            .grid-3, .grid-4 {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .hero h1 { font-size: 42px; }
-            .search-box { flex-direction: column; }
-            .footer-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links, .nav-actions .btn-outline {
-                display: none; /* Hide desktop menu on mobile */
-            }
-            .mobile-menu-btn {
-                display: block;
-            }
-            .grid-3, .grid-4, .footer-grid {
-                grid-template-columns: 1fr;
-            }
-            .hero { padding: 140px 0 60px; }
-            .hero h1 { font-size: 32px; }
-            .hero-buttons { flex-direction: column; }
-            .search-box { margin-top: 40px; }
-            .footer-bottom { flex-direction: column; text-align: center; gap: 15px; }
-            
-            /* Mobile Menu Active State */
-            .nav-links.active {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 80px;
-                left: 0;
-                width: 100%;
-                background: var(--bg-pure-white);
-                padding: 20px;
-                border-bottom: 1px solid var(--border-color);
-                box-shadow: var(--shadow-md);
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Header & Navigation Bar -->
-    <header id="header">
-        <div class="container navbar">
-            <!-- Logo Section -->
-            <a href="#" class="logo">
-                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
-                EduPro<span style="color: var(--primary-color);">.</span>
-            </a>
-
-            <!-- Desktop Menu Links -->
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#classes">Classes 1-12</a></li>
-                <li><a href="#materials">Study Materials</a></li>
-                <li><a href="#revision">Exams & Revision</a></li>
-            </ul>
-
-            <!-- Buttons -->
-            <div class="nav-actions">
-                <button class="btn btn-outline">Log In</button>
-                <button class="btn btn-primary" style="display: none; /* Hidden on very small screens */ @media(min-width: 400px){display: block;}">Sign Up</button>
-                <!-- Mobile Hamburger Icon -->
-                <button class="mobile-menu-btn" id="mobileBtn">
-                    <i class="fas fa-bars"></i>
+    setTimeout(() => showToast(`${fileName} downloaded successfully!`, 'success'), 1000);
+  };
+
+  // --- COMPONENTS ---
+
+  const ToastNotification = () => {
+    if (!toast) return null;
+    return (
+      <div className="fixed bottom-5 right-5 z-[9999] animate-in slide-in-from-bottom-5">
+        <div className={`px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3 text-white ${toast.type === 'error' ? 'bg-red-600' : toast.type === 'info' ? 'bg-slate-800' : 'bg-blue-600'}`}>
+          <CheckCircle size={20} />
+          <span className="font-medium">{toast.message}</span>
+        </div>
+      </div>
+    );
+  };
+
+  const Navbar = () => (
+    <nav className="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 transition-all">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          
+          {/* Logo */}
+          <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => navigateTo('home')}>
+            <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center text-xl font-bold mr-3 shadow-lg shadow-blue-600/20">EP</div>
+            <span className="font-bold text-2xl text-slate-900 tracking-tight">EduPro<span className="text-blue-600">.</span></span>
+          </div>
+
+          {/* Desktop Links */}
+          <div className="hidden md:flex items-center space-x-8">
+            <button onClick={() => navigateTo('home')} className={`font-bold transition-colors ${currentView === 'home' ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900'}`}>Dashboard</button>
+            <button onClick={() => navigateTo('classes')} className={`font-bold transition-colors ${['classes', 'subject'].includes(currentView) ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900'}`}>Academics</button>
+            {/* NEW MCQ SECTION OPTION */}
+            <button onClick={() => navigateTo('mcq-dashboard')} className={`font-bold transition-colors ${['mcq-dashboard', 'quiz'].includes(currentView) ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900'}`}>MCQ Tests</button>
+            <button onClick={() => navigateTo('exams')} className={`font-bold transition-colors ${currentView === 'exams' ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900'}`}>Exam Center</button>
+          </div>
+
+          {/* User / Auth Desktop */}
+          <div className="hidden md:flex items-center space-x-4">
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 bg-slate-50 px-4 py-2 rounded-full border border-slate-200">
+                  <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold"><User size={16} /></div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-sm text-slate-800 leading-tight">{user.name}</span>
+                    <span className="text-xs text-slate-500 font-medium">{user.progress}% Completed</span>
+                  </div>
+                </div>
+                <button onClick={() => {setUser(null); navigateTo('home'); showToast('Logged out');}} className="text-slate-400 hover:text-red-500 transition-colors"><LogOut size={20} /></button>
+              </div>
+            ) : (
+              <>
+                <button onClick={() => setModalType('login')} className="text-slate-600 font-bold hover:text-slate-900 px-4 py-2">Sign In</button>
+                <button onClick={() => setModalType('login')} className="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all">Enroll Free</button>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Menu 3-Line Button */}
+          <button className="md:hidden text-slate-900 p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? <X size={32} /> : <Menu size={32} />}
+          </button>
+        </div>
+      </div>
+
+      {/* FIXED MOBILE MENU DROPDOWN (Working!) */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-2xl p-4 flex flex-col space-y-2 animate-in slide-in-from-top-2">
+          <button onClick={() => navigateTo('home')} className={`text-left px-4 py-3 rounded-xl font-bold ${currentView === 'home' ? 'bg-blue-50 text-blue-600' : 'text-slate-700 hover:bg-slate-50'}`}>Dashboard</button>
+          <button onClick={() => navigateTo('classes')} className={`text-left px-4 py-3 rounded-xl font-bold ${['classes', 'subject'].includes(currentView) ? 'bg-blue-50 text-blue-600' : 'text-slate-700 hover:bg-slate-50'}`}>Academics</button>
+          {/* MCQ Option inside Mobile Menu */}
+          <button onClick={() => navigateTo('mcq-dashboard')} className={`text-left px-4 py-3 rounded-xl font-bold ${['mcq-dashboard', 'quiz'].includes(currentView) ? 'bg-blue-50 text-blue-600' : 'text-slate-700 hover:bg-slate-50'}`}>MCQ Tests</button>
+          <button onClick={() => navigateTo('exams')} className={`text-left px-4 py-3 rounded-xl font-bold ${currentView === 'exams' ? 'bg-blue-50 text-blue-600' : 'text-slate-700 hover:bg-slate-50'}`}>Exam Center</button>
+          
+          <div className="border-t border-slate-100 mt-2 pt-4 flex flex-col space-y-3 px-2">
+            {!user ? (
+              <>
+                <button onClick={() => {setModalType('login'); setIsMobileMenuOpen(false);}} className="w-full border-2 border-slate-200 text-slate-900 font-bold py-3 rounded-xl hover:bg-slate-50">Sign In</button>
+                <button onClick={() => {setModalType('login'); setIsMobileMenuOpen(false);}} className="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700">Enroll Free</button>
+              </>
+            ) : (
+              <button onClick={() => {setUser(null); setIsMobileMenuOpen(false); showToast('Logged out');}} className="w-full bg-red-50 text-red-600 font-bold py-3 rounded-xl">Log Out</button>
+            )}
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+
+  // --- FULL VIEWS ---
+
+  // 1. HOME VIEW
+  const HomeView = () => (
+    <div className="animate-in fade-in duration-500 pt-32 pb-20 px-4 max-w-7xl mx-auto">
+      <div className="text-center relative">
+        <div className="inline-flex items-center space-x-2 bg-slate-50 border border-slate-200 px-4 py-2 rounded-full mb-8">
+          <Star size={16} className="text-yellow-500" />
+          <span className="text-sm font-bold text-slate-700">The Ultimate Education Management System</span>
+        </div>
+        <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
+          Master the Curriculum from <br className="hidden md:block"/><span className="text-blue-600">Class 1 to 12</span>
+        </h1>
+        <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-10">
+          Professional study materials, real-time mock tests, and verifiable PDF downloads. Everything you need to score 95%+.
+        </p>
+        <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16">
+          <button onClick={() => navigateTo('classes')} className="bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 shadow-xl transition-all">Access Portal</button>
+          <button onClick={() => navigateTo('mcq-dashboard')} className="bg-white border-2 border-slate-200 text-slate-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-50 transition-all flex items-center justify-center">
+            <Target className="mr-2 text-blue-600" size={24}/> Take a Free MCQ Test
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 text-center hover:border-blue-600 transition-all cursor-pointer hover:-translate-y-2 shadow-sm hover:shadow-xl" onClick={() => navigateTo('classes')}>
+          <BookOpen size={40} className="text-blue-600 mx-auto mb-4" />
+          <h3 className="text-xl font-bold mb-2">Structured Academics</h3>
+          <p className="text-slate-500 text-sm">Access chapter-wise video lectures and NCERT notes.</p>
+        </div>
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 text-center hover:border-blue-600 transition-all cursor-pointer hover:-translate-y-2 shadow-sm hover:shadow-xl" onClick={() => navigateTo('mcq-dashboard')}>
+          <FileQuestion size={40} className="text-blue-600 mx-auto mb-4" />
+          <h3 className="text-xl font-bold mb-2">Dedicated MCQ Tests</h3>
+          <p className="text-slate-500 text-sm">Take timed MCQs and get instant performance analytics.</p>
+        </div>
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 text-center hover:border-blue-600 transition-all cursor-pointer hover:-translate-y-2 shadow-sm hover:shadow-xl" onClick={() => navigateTo('exams')}>
+          <Download size={40} className="text-blue-600 mx-auto mb-4" />
+          <h3 className="text-xl font-bold mb-2">PDF Resource Center</h3>
+          <p className="text-slate-500 text-sm">Download official formula sheets and sample papers directly.</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  // 2. CLASSES DASHBOARD
+  const ClassesView = () => (
+    <div className="pt-28 pb-20 px-4 max-w-7xl mx-auto animate-in fade-in">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-slate-200 pb-6">
+        <div>
+          <h1 className="text-4xl font-extrabold text-slate-900">Academic Framework</h1>
+          <p className="text-slate-500 mt-2">Select your class to view available subjects.</p>
+        </div>
+        <div className="mt-4 md:mt-0 flex flex-wrap gap-2">
+          {Object.keys(curriculumData).map(id => (
+            <button key={id} onClick={() => setSelectedClass(id)} className={`px-4 py-2 rounded-lg font-bold text-sm ${selectedClass === id ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+              Class {id}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {curriculumData[selectedClass]?.subjects.map((sub, idx) => {
+          const Icon = sub.icon;
+          return (
+            <div key={idx} className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all flex flex-col">
+              <div className="flex justify-between items-start mb-6">
+                <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center border border-blue-100"><Icon size={28} /></div>
+                {user && <span className="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">{sub.progress}% Done</span>}
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">{sub.name}</h3>
+              <p className="text-slate-500 text-sm mb-8 flex items-center"><Book size={16} className="mr-2"/> {sub.chapters} Chapters Available</p>
+              <button onClick={() => navigateTo('subject', selectedClass, sub)} className="w-full bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition-colors flex justify-center items-center mt-auto">
+                Open Subject <ChevronRight size={18} className="ml-1"/>
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  // 3. SUBJECT DEEP-DIVE VIEW
+  const SubjectView = () => {
+    if(!selectedSubject) return null;
+    return (
+      <div className="pt-28 pb-20 px-4 max-w-5xl mx-auto animate-in fade-in">
+        <button onClick={() => navigateTo('classes')} className="flex items-center text-blue-600 font-bold mb-6 hover:underline"><ArrowLeft size={18} className="mr-1"/> Back to Subjects</button>
+        <div className="bg-slate-900 rounded-3xl p-8 md:p-12 text-white mb-8 shadow-xl">
+          <h1 className="text-4xl font-bold mb-4">{selectedSubject.name} Curriculum</h1>
+          <p className="text-slate-400 text-lg mb-8">Master all {selectedSubject.chapters} chapters with our extreme guided path.</p>
+          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+            <button onClick={() => downloadRealPDF(`${selectedSubject.name}_Full_Syllabus.pdf`)} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center">
+              <Download size={18} className="mr-2"/> Download Syllabus PDF
+            </button>
+            <button onClick={() => navigateTo('mcq-dashboard')} className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-3 rounded-xl font-bold flex items-center justify-center">
+              <Target size={18} className="mr-2"/> Subject Mock Test
+            </button>
+          </div>
+        </div>
+
+        <h3 className="text-2xl font-bold text-slate-900 mb-6">Chapter Index</h3>
+        <div className="space-y-4">
+          {mockChapters.map((chap) => (
+            <div key={chap.id} className="bg-white border border-slate-200 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between hover:border-blue-600 transition-colors gap-4">
+              <div className="flex items-center space-x-4">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${chap.isCompleted ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-400'}`}>
+                  {chap.isCompleted ? <CheckSquare size={20}/> : <LockIcon size={20}/>}
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-lg leading-tight">{chap.title}</h4>
+                  <p className="text-sm text-slate-500 flex items-center mt-1"><Clock size={14} className="mr-1"/> {chap.duration}</p>
+                </div>
+              </div>
+              <div className="flex space-x-3 w-full md:w-auto">
+                <button onClick={() => downloadRealPDF(`Chapter_${chap.id}_Notes.pdf`)} className="flex-1 md:flex-none p-3 flex justify-center text-slate-600 hover:text-blue-600 border border-slate-200 rounded-xl hover:bg-blue-50 hover:border-blue-200" title="Download Notes">
+                  <FileText size={20}/>
                 </button>
+                <button onClick={() => navigateTo('video', selectedClass, selectedSubject, chap)} className="flex-grow md:flex-grow-0 px-6 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 flex items-center justify-center whitespace-nowrap">
+                  <PlayCircle size={18} className="mr-2"/> Watch Lecture
+                </button>
+              </div>
             </div>
+          ))}
         </div>
-    </header>
+      </div>
+    );
+  };
 
-    <!-- Main Hero Section - First Impression -->
-    <section class="hero" id="home">
-        <div class="hero-bg-glow"></div>
-        <div class="container">
-            <span class="badge"><i class="fas fa-star" style="color: #fbbf24; margin-right: 5px;"></i> #1 Learning Platform for Boards</span>
-            <h1>Master Your Subjects from <br><span>Class 1 to 12</span></h1>
-            <p>The ultimate white-themed, professional learning platform. Get premium study materials, extreme revision notes, and highly accurate exam papers for Mathematics, Science, and more.</p>
-            
-            <div class="hero-buttons">
-                <button class="btn btn-primary">Start Learning Now</button>
-                <button class="btn btn-outline"><i class="fas fa-play-circle" style="margin-right: 8px;"></i> Watch Demo</button>
-            </div>
+  const LockIcon = ({size}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>;
 
-            <!-- Custom Search Bar / Filter -->
-            <div class="search-box">
-                <select class="search-input">
-                    <option value="">Select Your Class...</option>
-                    <option value="1-5">Primary (Class 1 - 5)</option>
-                    <option value="6-8">Middle (Class 6 - 8)</option>
-                    <option value="9-10">Secondary (Class 9 - 10)</option>
-                    <option value="11-12">Senior Sec. (Class 11 - 12)</option>
-                </select>
-                <select class="search-input">
-                    <option value="">Select Subject...</option>
-                    <option value="math">Mathematics</option>
-                    <option value="science">Science (Phy/Chem/Bio)</option>
-                    <option value="english">English Core</option>
-                </select>
-                <button class="btn btn-primary search-btn"><i class="fas fa-search"></i> Find</button>
+  // 4. WORKING VIDEO PLAYER PORTAL
+  const VideoView = () => {
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+      let interval;
+      if (isPlaying) {
+        interval = setInterval(() => {
+          setProgress(p => p >= 100 ? 0 : p + 1);
+        }, 1000); 
+      }
+      return () => clearInterval(interval);
+    }, [isPlaying]);
+
+    return (
+      <div className="pt-28 pb-20 px-4 max-w-6xl mx-auto animate-in fade-in">
+        <button onClick={() => navigateTo('subject', selectedClass, selectedSubject)} className="flex items-center text-blue-600 font-bold mb-6 hover:underline"><ArrowLeft size={18} className="mr-1"/> Back to Chapter List</button>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-4">
+            <div className="bg-slate-900 rounded-2xl aspect-video relative flex flex-col justify-end overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 flex items-center justify-center">
+                {isPlaying ? (
+                   <div className="text-white text-center opacity-50"><BarChart size={60} className="mx-auto mb-2 animate-pulse"/> Video Stream Active</div>
+                ) : (
+                   <PlayCircle size={80} className="text-white opacity-80 cursor-pointer hover:scale-110 transition-transform hover:text-blue-500" onClick={() => setIsPlaying(true)} />
+                )}
+              </div>
+              <div className="bg-gradient-to-t from-black/80 to-transparent p-4 relative z-10">
+                <div className="w-full h-1.5 bg-white/30 rounded-full mb-4 cursor-pointer">
+                  <div className="h-full bg-blue-500 rounded-full" style={{width: `${progress}%`}}></div>
+                </div>
+                <div className="flex items-center justify-between text-white">
+                  <div className="flex items-center space-x-4">
+                    <button onClick={() => setIsPlaying(!isPlaying)} className="hover:text-blue-400">
+                      {isPlaying ? <PauseCircle size={24}/> : <PlayCircle size={24}/>}
+                    </button>
+                    <span className="text-sm font-medium">00:{(progress % 60).toString().padStart(2, '0')} / 45:00</span>
+                  </div>
+                  <Target size={20} className="text-white/50 hover:text-white cursor-pointer" title="Fullscreen"/>
+                </div>
+              </div>
             </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">{selectedChapter?.title || 'Interactive Lecture'}</h2>
+            <p className="text-slate-500 font-medium">Instructor: Dr. A. Sharma • High Definition • Board Aligned</p>
+          </div>
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 h-fit">
+            <h3 className="font-bold text-lg mb-4 text-slate-900">Resources</h3>
+            <button onClick={() => downloadRealPDF('Lecture_Transcript.pdf')} className="w-full bg-white border border-slate-200 p-4 rounded-xl flex items-center justify-between hover:border-blue-600 hover:shadow-md transition-all mb-3 text-left">
+              <div className="flex items-center"><FileText size={18} className="text-blue-600 mr-3 shrink-0"/> <div><h4 className="font-bold text-sm text-slate-900">Transcript</h4><p className="text-xs text-slate-500">PDF Document</p></div></div>
+              <Download size={16} className="text-slate-400"/>
+            </button>
+            <button onClick={() => navigateTo('quiz')} className="w-full bg-white border border-slate-200 p-4 rounded-xl flex items-center justify-between hover:border-blue-600 hover:shadow-md transition-all text-left">
+              <div className="flex items-center"><FileQuestion size={18} className="text-blue-600 mr-3 shrink-0"/> <div><h4 className="font-bold text-sm text-slate-900">Concept MCQ Quiz</h4><p className="text-xs text-slate-500">Test Knowledge</p></div></div>
+              <ChevronRight size={16} className="text-slate-400"/>
+            </button>
+          </div>
         </div>
-    </section>
+      </div>
+    );
+  };
 
-    <!-- Premium Features Section -->
-    <section class="section bg-gray-section" id="materials">
-        <div class="container">
-            <div class="section-header">
-                <h2>Why Choose EduPro?</h2>
-                <p>We provide extreme level clarity for complex subjects. Built by toppers, verified by expert teachers.</p>
-            </div>
-
-            <div class="grid-3">
-                <!-- Feature 1 -->
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-book-open"></i></div>
-                    <h3>NCERT Solutions</h3>
-                    <p>Complete, step-by-step verified solutions for all NCERT textbooks from class 6 to 12. Never get stuck on a question again.</p>
-                    <a href="#" class="card-link">Explore Solutions <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <!-- Feature 2 -->
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-microscope"></i></div>
-                    <h3>Concept Videos</h3>
-                    <p>High-quality animated videos for Physics and Chemistry to visualize concepts before you memorize them.</p>
-                    <a href="#" class="card-link">Watch Videos <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <!-- Feature 3 -->
-                <div class="card">
-                    <div class="card-icon"><i class="fas fa-laptop-code"></i></div>
-                    <h3>Live Doubt Solving</h3>
-                    <p>Stuck at 2 AM? Our 24/7 expert tutors are online to solve your math problems instantly with detailed steps.</p>
-                    <a href="#" class="card-link">Ask a Doubt <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
+  // 5. NEW: DEDICATED MCQ DASHBOARD
+  const MCQDashboardView = () => (
+    <div className="pt-28 pb-20 px-4 max-w-7xl mx-auto animate-in fade-in">
+      <div className="bg-gradient-to-r from-slate-900 to-blue-900 rounded-3xl p-8 md:p-12 text-white shadow-xl mb-12">
+        <div className="flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-6 backdrop-blur-sm">
+          <Target size={32} className="text-blue-300"/>
         </div>
-    </section>
-
-    <!-- Classes Categorization Section -->
-    <section class="section" id="classes">
-        <div class="container">
-            <div class="section-header">
-                <h2>Structured Curriculum</h2>
-                <p>Select your class group to access specific syllabus, textbooks, and targeted board exam preparations.</p>
-            </div>
-
-            <div class="grid-4">
-                <div class="class-box">
-                    <i class="fas fa-child"></i>
-                    <h4>Class 1 - 5</h4>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Basics & Foundation</p>
-                </div>
-                <div class="class-box">
-                    <i class="fas fa-school"></i>
-                    <h4>Class 6 - 8</h4>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Middle School Level</p>
-                </div>
-                <div class="class-box">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <h4>Class 9 - 10</h4>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Board Preparation</p>
-                </div>
-                <div class="class-box">
-                    <i class="fas fa-user-graduate"></i>
-                    <h4>Class 11 - 12</h4>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">JEE/NEET & Boards</p>
-                </div>
-            </div>
+        <h1 className="text-4xl md:text-5xl font-extrabold mb-4">MCQ Test Center</h1>
+        <p className="text-lg text-blue-100 max-w-2xl mb-8">Evaluate your preparation with timed Multiple Choice Questions. Select your subject below to start a high-intensity mock test.</p>
+        <div className="flex space-x-4">
+          <div className="flex items-center bg-white/10 px-4 py-2 rounded-lg text-sm font-medium"><Clock size={16} className="mr-2"/> Timed Sessions</div>
+          <div className="flex items-center bg-white/10 px-4 py-2 rounded-lg text-sm font-medium"><Award size={16} className="mr-2"/> Instant Results</div>
         </div>
-    </section>
+      </div>
 
-    <!-- Extreme Revision & Exam Section -->
-    <section class="section bg-gray-section" id="revision">
-        <div class="container">
-            <div class="section-header">
-                <h2>Extreme Revision Center</h2>
-                <p>The night before the exam? We've got you covered. Quick summaries, master formulas, and previous papers.</p>
+      <h2 className="text-2xl font-bold text-slate-900 mb-6 px-2">Select a Test to Begin</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Mock Test Cards */}
+        {[
+          { title: "Science Core Concepts", category: "Science", q: 25, time: "30 mins", icon: FlaskConical },
+          { title: "Algebra & Calculus", category: "Mathematics", q: 20, time: "45 mins", icon: Sigma },
+          { title: "English Grammar Rules", category: "Humanities", q: 30, time: "20 mins", icon: Library },
+          { title: "Physics Laws & Theories", category: "Physics", q: 15, time: "25 mins", icon: Zap },
+          { title: "Biology: Human Body", category: "Biology", q: 40, time: "40 mins", icon: Dna },
+          { title: "Full Board Mock Test", category: "Mixed", q: 100, time: "180 mins", icon: FileQuestion },
+        ].map((test, i) => {
+          const Icon = test.icon;
+          return (
+            <div key={i} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-blue-500 hover:shadow-lg transition-all flex flex-col cursor-pointer" onClick={() => navigateTo('quiz')}>
+              <div className="flex justify-between items-start mb-4">
+                <span className="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">{test.category}</span>
+                <Icon size={24} className="text-blue-500"/>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">{test.title}</h3>
+              <div className="flex items-center text-sm text-slate-500 mb-6 font-medium space-x-4">
+                <span className="flex items-center"><FileText size={14} className="mr-1"/> {test.q} MCQs</span>
+                <span className="flex items-center"><Clock size={14} className="mr-1"/> {test.time}</span>
+              </div>
+              <button className="w-full bg-blue-50 text-blue-700 font-bold py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-colors mt-auto flex items-center justify-center">
+                Start Test <ChevronRight size={18} className="ml-1"/>
+              </button>
             </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 
-            <div class="grid-3">
-                <!-- Revision Card 1 -->
-                <div class="exam-card">
-                    <div class="exam-header">
-                        <span class="tag hot">CRITICAL</span>
-                        <i class="fas fa-bolt text-muted"></i>
-                    </div>
-                    <div class="exam-body">
-                        <h3>15-Minute Recaps</h3>
-                        <p>Bullet-point summaries of every chapter. Perfect for waiting-outside-exam-hall revision.</p>
-                        <ul class="exam-list">
-                            <li><i class="fas fa-check"></i> Math theorems simplified</li>
-                            <li><i class="fas fa-check"></i> Science definitions highlighted</li>
-                        </ul>
-                    </div>
-                    <div class="exam-footer">
-                        <button class="exam-btn">Read Summaries</button>
-                    </div>
-                </div>
+  // 6. WORKING LIVE MOCK TEST ENGINE
+  const QuizView = () => {
+    const [qIndex, setQIndex] = useState(0);
+    const [score, setScore] = useState(0);
+    const [showResult, setShowResult] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(300); // 5 mins
+    const [selectedOption, setSelectedOption] = useState(null);
 
-                <!-- Revision Card 2 -->
-                <div class="exam-card">
-                    <div class="exam-header">
-                        <span class="tag essential">DOWNLOADS</span>
-                        <i class="fas fa-file-pdf text-muted"></i>
-                    </div>
-                    <div class="exam-body">
-                        <h3>Master Formula Sheets</h3>
-                        <p>One-page cheat sheets containing all formulas of Algebra, Calculus, and Physics.</p>
-                        <ul class="exam-list">
-                            <li><i class="fas fa-check"></i> High-res printable PDFs</li>
-                            <li><i class="fas fa-check"></i> Topic-wise categorization</li>
-                        </ul>
-                    </div>
-                    <div class="exam-footer">
-                        <button class="exam-btn">Download PDF</button>
-                    </div>
-                </div>
-
-                <!-- Revision Card 3 -->
-                <div class="exam-card">
-                    <div class="exam-header">
-                        <span class="tag practice">PRACTICE</span>
-                        <i class="fas fa-pen-nib text-muted"></i>
-                    </div>
-                    <div class="exam-body">
-                        <h3>Previous 10 Yr Papers</h3>
-                        <p>Actual board exam papers (CBSE/ICSE) fully solved by strict marking scheme experts.</p>
-                        <ul class="exam-list">
-                            <li><i class="fas fa-check"></i> Step marking details</li>
-                            <li><i class="fas fa-check"></i> Most repeated questions</li>
-                        </ul>
-                    </div>
-                    <div class="exam-footer">
-                        <button class="exam-btn" style="background: var(--text-dark); color: white; border-color: var(--text-dark);">Start Solving</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Call to Action Banner -->
-    <section class="cta-section">
-        <div class="container">
-            <h2>Ready to become a Topper?</h2>
-            <p>Join over 200,000+ smart students who have upgraded their study methods with EduPro's professional materials.</p>
-            <button class="btn btn-white btn">Create Free Account</button>
-        </div>
-    </section>
-
-    <!-- Professional Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-about">
-                    <a href="#" class="logo" style="font-size: 20px;">
-                        <div class="logo-icon" style="width:30px; height:30px; font-size:14px;"><i class="fas fa-graduation-cap"></i></div>
-                        EduPro<span style="color: var(--primary-color);">.</span>
-                    </a>
-                    <p>The premium, white-themed educational platform providing top-tier academic resources for classes 1 to 12 across India.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-
-                <div class="footer-links">
-                    <h4>Academics</h4>
-                    <ul>
-                        <li><a href="#">Class 11 & 12</a></li>
-                        <li><a href="#">Class 9 & 10</a></li>
-                        <li><a href="#">Class 6 to 8</a></li>
-                        <li><a href="#">NCERT Books</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-links">
-                    <h4>Exam Prep</h4>
-                    <ul>
-                        <li><a href="#">Mock Tests</a></li>
-                        <li><a href="#">Previous Papers</a></li>
-                        <li><a href="#">Formula Sheets</a></li>
-                        <li><a href="#">Syllabus 2026</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact Support</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Use</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 EduPro Learning. All rights reserved.</p>
-                <p>Designed for Extreme Success</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript Functions -->
-    <script>
-        // Yahan par Mobile Menu ko open/close karne ka code hai
-        const mobileBtn = document.getElementById('mobileBtn');
-        const navLinks = document.getElementById('navLinks');
-        const icon = mobileBtn.querySelector('i');
-
-        mobileBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            
-            // Icon change from Bars to Cross (X)
-            if(navLinks.classList.contains('active')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
+    useEffect(() => {
+      if (showResult) return;
+      const timer = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) { clearInterval(timer); setShowResult(true); return 0; }
+          return prev - 1;
         });
+      }, 1000);
+      return () => clearInterval(timer);
+    }, [showResult]);
 
-        // Sticky Navbar par Shadow add karna jab page scroll ho
-        window.addEventListener('scroll', () => {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)';
-            } else {
-                header.style.boxShadow = 'none';
-            }
-        });
-    </script>
-</body>
-</html>
+    const handleAnswer = (index) => {
+      setSelectedOption(index);
+      // Wait a moment so user sees what they clicked, then move to next
+      setTimeout(() => {
+        if (index === dummyQuestions[qIndex].ans) setScore(s => s + 1);
+        if (qIndex + 1 < dummyQuestions.length) {
+          setQIndex(qIndex + 1);
+          setSelectedOption(null); // reset for next question
+        } else {
+          setShowResult(true);
+        }
+      }, 400);
+    };
+
+    if (showResult) {
+      const percentage = (score / dummyQuestions.length) * 100;
+      return (
+        <div className="pt-32 pb-20 px-4 max-w-2xl mx-auto animate-in zoom-in-95 text-center">
+          <div className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6"><Award size={48}/></div>
+          <h2 className="text-4xl font-extrabold text-slate-900 mb-4">MCQ Test Complete</h2>
+          <div className="bg-white border border-slate-200 shadow-lg rounded-3xl p-8 mb-8 relative overflow-hidden">
+            <div className={`absolute top-0 left-0 w-full h-2 ${percentage >= 80 ? 'bg-green-500' : percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}></div>
+            <p className="text-slate-500 text-lg mb-2 font-medium">Your Final Score</p>
+            <p className="text-7xl font-bold text-slate-900 mb-4">{score} <span className="text-3xl text-slate-400">/ {dummyQuestions.length}</span></p>
+            <div className="inline-block bg-slate-50 px-6 py-2 rounded-full font-bold text-blue-600 border border-slate-200">
+              Accuracy: {percentage}%
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 justify-center">
+            <button onClick={() => navigateTo('mcq-dashboard')} className="bg-white border-2 border-slate-200 text-slate-900 px-8 py-4 rounded-xl font-bold hover:bg-slate-50 w-full sm:w-auto">Take Another Test</button>
+            <button onClick={() => navigateTo('home')} className="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 w-full sm:w-auto shadow-lg shadow-blue-600/20">Dashboard</button>
+          </div>
+        </div>
+      );
+    }
+
+    const currentQ = dummyQuestions[qIndex];
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+
+    return (
+      <div className="pt-28 pb-20 px-4 max-w-3xl mx-auto animate-in fade-in">
+        <div className="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="font-bold text-slate-600 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
+            Question {qIndex + 1} <span className="text-slate-400">of {dummyQuestions.length}</span>
+          </div>
+          <div className="flex items-center text-red-600 font-bold bg-red-50 px-4 py-2 rounded-xl border border-red-100">
+            <Clock size={18} className="mr-2"/> {mins}:{secs.toString().padStart(2, '0')}
+          </div>
+        </div>
+        
+        {/* Progress Bar */}
+        <div className="w-full h-2 bg-slate-100 rounded-full mb-8 overflow-hidden">
+          <div className="h-full bg-blue-500 rounded-full transition-all duration-300" style={{width: `${((qIndex)/dummyQuestions.length)*100}%`}}></div>
+        </div>
+
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 md:p-10 shadow-lg">
+          <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-10 leading-relaxed">{currentQ.q}</h3>
+          <div className="space-y-4">
+            {currentQ.options.map((opt, i) => (
+              <button 
+                key={i} 
+                onClick={() => handleAnswer(i)} 
+                className={`w-full text-left p-5 rounded-2xl border-2 transition-all font-semibold text-lg flex items-center
+                  ${selectedOption === i ? 'border-blue-600 bg-blue-50 scale-[0.99]' : 'border-slate-100 hover:border-blue-400 hover:bg-slate-50 text-slate-700'}
+                `}
+              >
+                <span className={`inline-block w-10 h-10 rounded-xl text-center leading-10 mr-4 font-bold shrink-0 transition-colors
+                  ${selectedOption === i ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'}
+                `}>
+                  {['A','B','C','D'][i]}
+                </span> 
+                {opt}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // 7. EXAM & REVISION CENTER (With Real Downloads)
+  const ExamCenterView = () => (
+    <div className="pt-28 pb-20 bg-slate-50 min-h-screen animate-in fade-in">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">Resource Repository</h1>
+          <p className="text-lg text-slate-500">Download verifiable PDF documents, master formulas, and past papers instantly to your local device.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-400 transition-all flex flex-col items-center text-center group">
+            <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors"><Sigma size={40}/></div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">Master Formula Book</h3>
+            <p className="text-slate-500 text-sm mb-8 px-4">A complete 45-page PDF compilation of all necessary formulas for Mathematics and Physics.</p>
+            <button onClick={() => downloadRealPDF('Formula_Book_2026.pdf')} className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 flex justify-center items-center mt-auto transition-colors">
+              <Download size={20} className="mr-2"/> Download PDF File
+            </button>
+          </div>
+          <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-400 transition-all flex flex-col items-center text-center group">
+            <div className="w-20 h-20 bg-slate-100 text-slate-900 rounded-3xl flex items-center justify-center mb-6 group-hover:bg-slate-900 group-hover:text-white transition-colors"><PenTool size={40}/></div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">Previous Year Papers</h3>
+            <p className="text-slate-500 text-sm mb-8 px-4">Authentic board examination papers from the last 5 years with detailed step-by-step marking schemes.</p>
+            <button onClick={() => downloadRealPDF('Past_Papers_Archive.pdf')} className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 flex justify-center items-center mt-auto transition-colors">
+              <Download size={20} className="mr-2"/> Download Archive
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // AUTH MODAL
+  const AuthModal = () => {
+    if (modalType !== 'login') return null;
+    return (
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 animate-in zoom-in-95">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-slate-900">Secure Access</h2>
+            <button onClick={() => setModalType(null)} className="text-slate-400 hover:text-slate-900 bg-slate-100 p-2 rounded-full"><X size={20}/></button>
+          </div>
+          <form onSubmit={handleAuth} className="space-y-5">
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Student ID / Email</label>
+              <input required type="text" className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none transition-all font-medium" placeholder="student@edupro.com"/>
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Password</label>
+              <input required type="password" className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none transition-all font-medium" placeholder="••••••••"/>
+            </div>
+            <button type="submit" className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all mt-4 text-lg">Authenticate</button>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
+  // MAIN RENDER
+  return (
+    <div className="min-h-screen flex flex-col bg-white font-sans text-slate-900 selection:bg-blue-200">
+      <Navbar />
+      <main className="flex-grow">
+        {currentView === 'home' && <HomeView />}
+        {currentView === 'classes' && <ClassesView />}
+        {currentView === 'subject' && <SubjectView />}
+        {currentView === 'video' && <VideoView />}
+        {currentView === 'mcq-dashboard' && <MCQDashboardView />}  {/* NEW MCQ DASHBOARD */}
+        {currentView === 'quiz' && <QuizView />}
+        {currentView === 'exams' && <ExamCenterView />}
+      </main>
+
+      {/* Floating Chat / Support Button */}
+      <button onClick={() => showToast('Connecting to a live tutor...', 'info')} className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform hover:bg-blue-600 flex items-center justify-center">
+        <MessageCircle size={28} />
+      </button>
+
+      <footer className="bg-white border-t border-slate-200 py-8 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 text-center text-sm font-medium text-slate-500">
+          <span className="font-bold text-slate-900 mr-1">EduPro<span className="text-blue-600">.</span></span> &copy; 2026 Premium LMS Platform.
+        </div>
+      </footer>
+
+      <AuthModal />
+      <ToastNotification />
+    </div>
+  );
+}
 
 
