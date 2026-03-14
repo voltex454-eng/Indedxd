@@ -1,624 +1,1539 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduPro - Premium Learning Platform</title>
+    <title>Xorvila Hub | Enterprise Cloud & Bare Metal Hosting Solutions</title>
+    <meta name="description" content="Deploy mission-critical applications on Xorvila Hub's globally distributed, high-performance infrastructure. Explore Shared, VPS, Dedicated, and Cloud solutions.">
     
-    <!-- Tailwind CSS (No installation needed) -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- 🔥 NEW: jsPDF Library for REAL PDF Generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <!-- Tailwind Config -->
+    <!-- Tailwind Custom Configuration -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { primary: '#2563eb', dark: '#0f172a' }
+                    colors: {
+                        brand: {
+                            50: '#fffaf0',
+                            100: '#feeed1',
+                            200: '#fdd493',
+                            300: '#fcb74d',
+                            400: '#fb9d15',
+                            500: '#ff9900', /* Signature Orange */
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        },
+                        corporate: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    }
                 }
             }
         }
     </script>
 
+    <!-- Custom CSS for Advanced Animations & Transitions -->
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #0f172a; }
-        .view-section { display: none; animation: fadeIn 0.4s ease-in-out; }
-        .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        html { scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
+        
+        /* Core SPA Routing Styles */
+        .page-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .page-section.active {
+            display: block;
+            opacity: 1;
+            animation: slideFadeUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        @keyframes slideFadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Abstract Background Patterns */
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        .bg-dots-pattern {
+            background-image: radial-gradient(rgba(15, 23, 42, 0.1) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Loaders & Interactive Elements */
+        .enterprise-loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .table-row-hover:hover td { background-color: #f8fafc; }
+        
+        /* Interactive Card Animations */
+        .feature-card { transition: all 0.3s ease; }
+        .feature-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); border-color: #ff9900; }
+        .interactive-btn { transition: all 0.2s ease; }
+        .interactive-btn:active { transform: scale(0.95); }
+
+        /* Scroll Reveal Animations (AOS Logic) */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reveal-fade {
+            opacity: 0;
+            transition: all 1s ease-out;
+        }
+        .reveal-fade.visible {
+            opacity: 1;
+        }
+
+        /* Custom Toast Notifications */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .toast-item {
+            min-width: 300px;
+            background: #fff;
+            border-left: 4px solid #ff9900;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            transform: translateX(120%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .toast-item.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
     </style>
 </head>
-<body class="antialiased flex flex-col min-h-screen selection:bg-blue-200">
+<body class="bg-slate-50 text-slate-800 antialiased overflow-x-hidden selection:bg-brand-200 selection:text-brand-900 flex flex-col min-h-screen">
 
-    <!-- NAVBAR -->
-    <nav class="fixed w-full z-50 glass-nav border-b border-slate-200 transition-all">
+    <!-- ========================================== -->
+    <!-- GLOBAL NAVIGATION & HEADERS                -->
+    <!-- ========================================== -->
+
+    <!-- Top Utility Bar (Desktop Only) -->
+    <div class="bg-corporate-950 text-slate-400 text-xs py-2 hidden lg:block border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div class="flex space-x-8">
+                <span class="flex items-center hover:text-white transition-colors cursor-pointer" onclick="showSystemToast('Connecting to Enterprise Sales...', 'info')">
+                    <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                    Enterprise Sales: +1 (800) 555-0199
+                </span>
+                <span class="flex items-center hover:text-white transition-colors cursor-pointer" onclick="showSystemToast('Opening Mail Client...', 'info')">
+                    <svg class="w-3.5 h-3.5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    support@xorvilahub.com
+                </span>
+                <span class="flex items-center text-emerald-400 font-medium bg-emerald-400/10 px-2 py-0.5 rounded-full cursor-pointer hover:bg-emerald-400/20 transition-colors" onclick="showSystemToast('All 12 Global Datacenters are operating at 100% capacity.', 'success')">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
+                    All Global Systems Operational
+                </span>
+            </div>
+            <div class="flex space-x-6">
+                <!-- Active Currency Selector -->
+                <div class="flex items-center space-x-3 border-r border-slate-700 pr-5">
+                    <span id="curr-usd" class="currency-btn cursor-pointer hover:text-white transition text-white font-bold" onclick="changeCurrency('USD')">USD ($)</span>
+                    <span id="curr-eur" class="currency-btn cursor-pointer hover:text-white transition" onclick="changeCurrency('EUR')">EUR (€)</span>
+                    <span id="curr-gbp" class="currency-btn cursor-pointer hover:text-white transition" onclick="changeCurrency('GBP')">GBP (£)</span>
+                </div>
+                <a href="#" class="hover:text-white transition-colors flex items-center interactive-btn" onclick="showSystemToast('Redirecting to secure Client Portal...', 'info')">
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
+                    Client Portal
+                </a>
+                <a href="#" class="hover:text-white transition-colors flex items-center interactive-btn" onclick="showSystemToast('Connecting to Roundcube Webmail...', 'info')">
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    Webmail
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 shadow-sm transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <div class="flex items-center cursor-pointer" onclick="navigateTo('home')">
-                    <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center text-xl font-bold mr-3 shadow-lg shadow-blue-600/20">EP</div>
-                    <span class="font-bold text-2xl tracking-tight">EduPro<span class="text-blue-600">.</span></span>
+                <!-- Brand Logo (Updated Style) -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer group interactive-btn" onclick="navigateTo('home')">
+                    <div class="flex items-center bg-black px-2 py-1.5 rounded-lg border border-gray-800 shadow-md transition-transform group-hover:scale-105">
+                        <span class="font-black text-2xl tracking-tight text-white pr-1">
+                            Xorvila
+                        </span>
+                        <span class="font-black text-2xl tracking-tight text-black bg-[#f90] px-2 py-0.5 rounded-md leading-none">
+                            Hub
+                        </span>
+                    </div>
                 </div>
 
-                <div class="hidden md:flex items-center space-x-8">
-                    <button onclick="navigateTo('home')" class="nav-link font-bold text-slate-500 hover:text-blue-600 transition-colors" data-target="home">Dashboard</button>
-                    <button onclick="navigateTo('classes')" class="nav-link font-bold text-slate-500 hover:text-blue-600 transition-colors" data-target="classes">Academics</button>
-                    <button onclick="navigateTo('mcq-dashboard')" class="nav-link font-bold text-slate-500 hover:text-blue-600 transition-colors" data-target="mcq-dashboard">MCQ Tests</button>
-                    <button onclick="navigateTo('exams')" class="nav-link font-bold text-slate-500 hover:text-blue-600 transition-colors" data-target="exams">Exam Center</button>
+                <!-- Desktop Navigation Menu -->
+                <nav class="hidden lg:flex space-x-1">
+                    <button onclick="navigateTo('home')" class="nav-btn px-4 py-8 text-sm font-semibold transition-colors border-b-2 text-brand-600 border-brand-600" id="nav-home">Home</button>
+                    <button onclick="navigateTo('shared')" class="nav-btn px-4 py-8 text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors border-b-2 border-transparent" id="nav-shared">Shared Hosting</button>
+                    <button onclick="navigateTo('vps')" class="nav-btn px-4 py-8 text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors border-b-2 border-transparent" id="nav-vps">Cloud VPS</button>
+                    <button onclick="navigateTo('dedicated')" class="nav-btn px-4 py-8 text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors border-b-2 border-transparent" id="nav-dedicated">Bare Metal</button>
+                    <button onclick="navigateTo('cloud')" class="nav-btn px-4 py-8 text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors border-b-2 border-transparent flex items-center" id="nav-cloud">
+                        Enterprise Cloud <span class="ml-2 bg-brand-100 text-brand-700 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse">New</span>
+                    </button>
+                    <button onclick="navigateTo('about')" class="nav-btn px-4 py-8 text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors border-b-2 border-transparent" id="nav-about">Company</button>
+                    <button onclick="navigateTo('contact')" class="nav-btn px-4 py-8 text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors border-b-2 border-transparent" id="nav-contact">Contact</button>
+                </nav>
+
+                <!-- Desktop CTA & Authentication -->
+                <div class="hidden lg:flex items-center space-x-5">
+                    <a href="#" class="text-sm font-semibold text-slate-600 hover:text-brand-600 transition-colors" onclick="showSystemToast('Redirecting to SSO login page...', 'info')">Sign In</a>
+                    <button class="interactive-btn bg-corporate-900 hover:bg-brand-600 text-white px-6 py-2.5 rounded-lg text-sm font-semibold shadow-md transition-all duration-300" onclick="showSystemToast('Account creation portal initialized.', 'success')">
+                        Create Account
+                    </button>
                 </div>
 
-                <div class="hidden md:flex items-center space-x-4" id="auth-desktop">
-                    <button onclick="openModal('login-modal')" class="text-slate-600 font-bold hover:text-slate-900 px-4 py-2">Sign In</button>
-                    <button onclick="openModal('login-modal')" class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all">Enroll Free</button>
+                <!-- Mobile Menu Hamburger -->
+                <div class="lg:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-brand-600 focus:outline-none p-2 bg-slate-100 rounded-md interactive-btn">
+                        <svg id="menu-icon-open" class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
+            </div>
+        </div>
 
-                <button class="md:hidden text-slate-900 p-2 focus:outline-none" onclick="toggleMobileMenu()">
-                    <i id="mobile-menu-icon" class="fas fa-bars text-2xl"></i>
+        <!-- Mobile Navigation Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-100 absolute w-full shadow-2xl z-40 max-h-[calc(100vh-5rem)] overflow-y-auto">
+            <div class="px-4 pt-4 pb-8 space-y-1">
+                <button onclick="navigateTo('home'); toggleMobileMenu()" class="w-full text-left font-semibold text-slate-900 py-4 border-b border-gray-50 flex justify-between items-center hover:text-brand-600 transition-colors">
+                    Home
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
-            </div>
-        </div>
-
-        <div id="mobile-menu" class="hidden md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-2xl p-4 flex flex-col space-y-2">
-            <button onclick="navigateTo('home')" class="text-left px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-slate-50">Dashboard</button>
-            <button onclick="navigateTo('classes')" class="text-left px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-slate-50">Academics</button>
-            <button onclick="navigateTo('mcq-dashboard')" class="text-left px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-slate-50">MCQ Tests</button>
-            <button onclick="navigateTo('exams')" class="text-left px-4 py-3 rounded-xl font-bold text-slate-700 hover:bg-slate-50">Exam Center</button>
-            <div class="border-t border-slate-100 mt-2 pt-4 px-2" id="auth-mobile">
-                <button onclick="openModal('login-modal')" class="w-full border-2 border-slate-200 text-slate-900 font-bold py-3 rounded-xl mb-3">Sign In</button>
-                <button onclick="openModal('login-modal')" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl">Enroll Free</button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- MAIN CONTENT AREA -->
-    <main class="flex-grow pt-20">
-
-        <!-- 1. HOME VIEW -->
-        <div id="view-home" class="view-section active pt-12 pb-20 px-4 max-w-7xl mx-auto">
-            <div class="text-center relative">
-                <div class="absolute top-0 right-1/4 w-96 h-96 bg-blue-50 rounded-full blur-3xl -z-10 opacity-60"></div>
-                <div class="inline-flex items-center space-x-2 bg-slate-50 border border-slate-200 px-4 py-2 rounded-full mb-8">
-                    <i class="fas fa-star text-yellow-500"></i>
-                    <span class="text-sm font-bold text-slate-700">The Ultimate Education Platform</span>
-                </div>
-                <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
-                    Master the Curriculum from <br class="hidden md:block"/><span class="text-blue-600">Class 1 to 12</span>
-                </h1>
-                <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-10">
-                    Professional study materials, real-time mock tests, and REAL, fully correct PDF syllabus and formula notes.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-16">
-                    <button onclick="navigateTo('classes')" class="bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-700 shadow-xl transition-all">Access Portal</button>
-                    <button onclick="navigateTo('mcq-dashboard')" class="bg-white border-2 border-slate-200 text-slate-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-slate-50 transition-all flex items-center justify-center">
-                        <i class="fas fa-bullseye mr-2 text-blue-600"></i> Take a Mock Test
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                <div class="bg-white p-8 rounded-3xl border border-slate-200 text-center hover-lift cursor-pointer" onclick="navigateTo('classes')">
-                    <i class="fas fa-book-open text-4xl text-blue-600 mb-4"></i>
-                    <h3 class="text-xl font-bold mb-2">Structured Academics</h3>
-                    <p class="text-slate-500 text-sm">Access chapter-wise video lectures and notes.</p>
-                </div>
-                <div class="bg-white p-8 rounded-3xl border border-slate-200 text-center hover-lift cursor-pointer" onclick="navigateTo('mcq-dashboard')">
-                    <i class="fas fa-laptop-code text-4xl text-blue-600 mb-4"></i>
-                    <h3 class="text-xl font-bold mb-2">Randomized MCQ Tests</h3>
-                    <p class="text-slate-500 text-sm">Take timed MCQs with a dynamic question bank every time.</p>
-                </div>
-                <div class="bg-white p-8 rounded-3xl border border-slate-200 text-center hover-lift cursor-pointer" onclick="navigateTo('exams')">
-                    <i class="fas fa-download text-4xl text-blue-600 mb-4"></i>
-                    <h3 class="text-xl font-bold mb-2">Real PDF Center</h3>
-                    <p class="text-slate-500 text-sm">Download official, correct formula sheets directly.</p>
+                <button onclick="navigateTo('shared'); toggleMobileMenu()" class="w-full text-left font-semibold text-slate-900 py-4 border-b border-gray-50 flex justify-between items-center hover:text-brand-600 transition-colors">
+                    Shared Hosting
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                <button onclick="navigateTo('vps'); toggleMobileMenu()" class="w-full text-left font-semibold text-slate-900 py-4 border-b border-gray-50 flex justify-between items-center hover:text-brand-600 transition-colors">
+                    Cloud VPS Servers
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                <button onclick="navigateTo('dedicated'); toggleMobileMenu()" class="w-full text-left font-semibold text-slate-900 py-4 border-b border-gray-50 flex justify-between items-center hover:text-brand-600 transition-colors">
+                    Bare Metal Dedicated
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+                <button onclick="navigateTo('cloud'); toggleMobileMenu()" class="w-full text-left font-semibold text-slate-900 py-4 border-b border-gray-50 flex justify-between items-center hover:text-brand-600 transition-colors">
+                    Enterprise Cloud solutions
+                    <span class="bg-brand-100 text-brand-700 text-xs px-2 py-1 rounded-md ml-auto mr-2">New</span>
+                </button>
+                <button onclick="navigateTo('about'); toggleMobileMenu()" class="w-full text-left font-semibold text-slate-900 py-4 border-b border-gray-50 flex justify-between items-center hover:text-brand-600 transition-colors">
+                    Company Overview
+                </button>
+                <button onclick="navigateTo('contact'); toggleMobileMenu()" class="w-full text-left font-semibold text-slate-900 py-4 border-b border-gray-50 flex justify-between items-center hover:text-brand-600 transition-colors">
+                    Contact & Support
+                </button>
+                <div class="pt-6 flex flex-col space-y-3">
+                    <a href="#" class="interactive-btn w-full text-center py-3 text-corporate-900 font-bold bg-slate-50 rounded-xl border border-gray-200" onclick="showSystemToast('Opening Mobile Portal...', 'info')">Sign In to Portal</a>
+                    <a href="#" class="interactive-btn w-full text-center py-3 bg-brand-600 text-white font-bold rounded-xl shadow-md" onclick="showSystemToast('Account creation started...', 'success')">Deploy Now</a>
                 </div>
             </div>
         </div>
+    </header>
 
-        <!-- 2. CLASSES DASHBOARD VIEW -->
-        <div id="view-classes" class="view-section pt-12 pb-20 px-4 max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-slate-200 pb-6">
-                <div>
-                    <h1 class="text-4xl font-extrabold text-slate-900">Academic Framework</h1>
-                    <p class="text-slate-500 mt-2">Select your class to view available subjects.</p>
-                </div>
-                <div class="mt-4 md:mt-0 flex flex-wrap gap-2" id="class-tabs">
-                    <button onclick="renderSubjects('1-5')" class="class-tab px-4 py-2 rounded-lg font-bold text-sm bg-slate-100 text-slate-600" data-id="1-5">Class 1-5</button>
-                    <button onclick="renderSubjects('6-8')" class="class-tab px-4 py-2 rounded-lg font-bold text-sm bg-slate-100 text-slate-600" data-id="6-8">Class 6-8</button>
-                    <button onclick="renderSubjects('9-10')" class="class-tab px-4 py-2 rounded-lg font-bold text-sm bg-slate-900 text-white" data-id="9-10">Class 9-10</button>
-                    <button onclick="renderSubjects('11-12')" class="class-tab px-4 py-2 rounded-lg font-bold text-sm bg-slate-100 text-slate-600" data-id="11-12">Class 11-12</button>
-                </div>
+    <!-- Main Content Wrapper -->
+    <div class="flex-grow">
+
+    <!-- ========================================== -->
+    <!-- 1. HOME PAGE SECTION                       -->
+    <!-- ========================================== -->
+    <main id="page-home" class="page-section active">
+        
+        <!-- Enterprise Hero Section -->
+        <section class="relative pt-24 pb-32 lg:pt-36 lg:pb-48 overflow-hidden bg-corporate-950">
+            <!-- Advanced Background Elements -->
+            <div class="absolute inset-0 z-0 reveal-fade">
+                <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] rounded-full bg-brand-600/20 blur-[120px] pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-[500px] h-[500px] rounded-full bg-orange-600/20 blur-[100px] pointer-events-none"></div>
             </div>
-            <div id="subjects-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-        </div>
 
-        <!-- 3. SUBJECT DEEP DIVE VIEW -->
-        <div id="view-subject" class="view-section pt-12 pb-20 px-4 max-w-5xl mx-auto">
-            <button onclick="navigateTo('classes')" class="flex items-center text-blue-600 font-bold mb-6 hover:underline"><i class="fas fa-arrow-left mr-2"></i> Back to Subjects</button>
-            <div class="bg-slate-900 rounded-3xl p-8 md:p-12 text-white mb-8 shadow-xl">
-                <h1 id="subject-title" class="text-4xl font-bold mb-4">Subject Name</h1>
-                <p class="text-slate-400 text-lg mb-8">Master all chapters with our extreme guided path.</p>
-                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <button onclick="generateRealPDF('Syllabus_2026.pdf', 'syllabus')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center">
-                        <i class="fas fa-download mr-2"></i> Download Full Syllabus
-                    </button>
-                    <button onclick="navigateTo('mcq-dashboard')" class="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-3 rounded-xl font-bold flex items-center justify-center">
-                        <i class="fas fa-bullseye mr-2"></i> Subject Mock Test
-                    </button>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center max-w-5xl mx-auto reveal-up">
+                    <div class="inline-flex items-center px-4 py-2 rounded-full bg-slate-800/80 border border-slate-700 text-slate-300 font-medium text-sm mb-8 backdrop-blur-md shadow-lg cursor-pointer hover:border-brand-500 transition-colors interactive-btn" onclick="navigateTo('cloud')">
+                        <span class="flex h-2 w-2 rounded-full bg-brand-400 mr-3 animate-pulse"></span>
+                        Introducing Xorvila Auto-Scaling Cloud Clusters v3.0
+                        <span class="ml-3 text-brand-400 font-bold flex items-center">Learn More <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></span>
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white tracking-tight mb-8 leading-[1.1]">
+                        Architect the Future with <br class="hidden md:block"/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-brand-200 to-orange-500">
+                            Unparalleled Infrastructure
+                        </span>
+                    </h1>
+                    
+                    <p class="text-xl md:text-2xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed font-light reveal-up" style="transition-delay: 0.1s;">
+                        Deploy mission-critical applications on our globally distributed, bare-metal and cloud environments. Engineered for enterprises demanding 99.999% uptime, uncompromising security, and infinite scalability.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 reveal-up" style="transition-delay: 0.2s;">
+                        <button onclick="navigateTo('dedicated')" class="interactive-btn w-full sm:w-auto px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold text-lg shadow-lg shadow-brand-600/30 flex items-center justify-center">
+                            View Bare Metal Solutions
+                            <svg class="w-5 h-5 ml-2 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                        <button onclick="navigateTo('vps')" class="interactive-btn w-full sm:w-auto px-8 py-4 bg-transparent border border-slate-600 hover:border-brand-400 text-white rounded-xl font-bold text-lg transition-all flex items-center justify-center backdrop-blur-sm hover:bg-white/5">
+                            Explore Cloud Instances
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <h3 class="text-2xl font-bold text-slate-900 mb-6">Chapter Index</h3>
-            <div id="chapters-container" class="space-y-4"></div>
-        </div>
 
-        <!-- 4. VIDEO PLAYER VIEW -->
-        <div id="view-video" class="view-section pt-12 pb-20 px-4 max-w-6xl mx-auto">
-            <button onclick="navigateTo('subject')" class="flex items-center text-blue-600 font-bold mb-6 hover:underline"><i class="fas fa-arrow-left mr-2"></i> Back to Chapter List</button>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 space-y-4">
-                    <div class="bg-slate-900 rounded-2xl aspect-video relative flex flex-col justify-end overflow-hidden shadow-2xl group cursor-pointer" onclick="toggleVideo()">
-                        <div id="video-overlay" class="absolute inset-0 flex items-center justify-center">
-                            <i class="fas fa-play-circle text-7xl text-white opacity-80 group-hover:scale-110 transition-transform group-hover:text-blue-500"></i>
-                        </div>
-                        <div id="video-playing" class="absolute inset-0 flex items-center justify-center hidden">
-                            <div class="text-white text-center opacity-50"><i class="fas fa-chart-bar text-5xl mb-2 animate-pulse"></i><br>Video Stream Active</div>
-                        </div>
-                        <div class="bg-gradient-to-t from-black/80 to-transparent p-4 relative z-10">
-                            <div class="w-full h-1.5 bg-white/30 rounded-full mb-4">
-                                <div id="video-progress" class="h-full bg-blue-500 rounded-full" style="width: 0%"></div>
-                            </div>
-                            <div class="flex items-center justify-between text-white">
-                                <div class="flex items-center space-x-4">
-                                    <button><i id="video-btn-icon" class="fas fa-play text-xl hover:text-blue-400"></i></button>
-                                    <span class="text-sm font-medium" id="video-time">00:00 / 45:00</span>
+                <!-- Enterprise Domain Search Console -->
+                <div class="mt-24 max-w-4xl mx-auto reveal-up" style="transition-delay: 0.3s;">
+                    <div class="bg-corporate-900/60 backdrop-blur-xl p-3 rounded-2xl border border-slate-700/50 shadow-2xl relative overflow-hidden focus-within:border-brand-500 transition-colors">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-500 to-orange-500"></div>
+                        <div class="p-2">
+                            <h3 class="text-slate-300 font-semibold mb-3 text-sm tracking-wider uppercase">Global Domain Registry Search</h3>
+                            <div class="flex flex-col sm:flex-row gap-3 relative">
+                                <div class="relative flex-grow">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <svg class="h-6 w-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                                    </div>
+                                    <input type="text" id="domainInput" placeholder="Secure your corporate identity (e.g., enterprise-corp.com)..." class="w-full pl-14 pr-4 py-4 rounded-xl bg-corporate-950/80 text-white placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium text-lg transition-all shadow-inner" onkeydown="if(event.key === 'Enter') searchDomain()"/>
                                 </div>
-                                <i class="fas fa-expand text-white/50 hover:text-white"></i>
+                                <button onclick="searchDomain()" id="searchDomainBtn" class="interactive-btn bg-brand-600 hover:bg-brand-500 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center justify-center disabled:opacity-70 whitespace-nowrap shadow-md">
+                                    <span id="searchIcon" class="flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg> Query Registry</span>
+                                    <span id="loadingIcon" class="hidden flex items-center"><div class="enterprise-loader mr-3"></div> Querying Nodes...</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Domain Result Area -->
+                            <div id="domainResultArea" class="hidden mt-4 bg-slate-800 rounded-xl border border-slate-600 p-6 z-20"></div>
+
+                            <div class="mt-5 flex flex-wrap justify-center sm:justify-start gap-4 text-slate-400 text-sm font-medium border-t border-slate-700/50 pt-4">
+                                <span class="hover:text-white cursor-pointer transition-colors flex items-center"><span class="w-2 h-2 rounded-full bg-slate-600 mr-2"></span>.com <span class="text-brand-400 ml-1 dynamic-price" data-base-price="10.99">$10.99</span></span>
+                                <span class="hover:text-white cursor-pointer transition-colors flex items-center"><span class="w-2 h-2 rounded-full bg-slate-600 mr-2"></span>.net <span class="text-brand-400 ml-1 dynamic-price" data-base-price="12.50">$12.50</span></span>
+                                <span class="hover:text-white cursor-pointer transition-colors flex items-center"><span class="w-2 h-2 rounded-full bg-slate-600 mr-2"></span>.io <span class="text-brand-400 ml-1 dynamic-price" data-base-price="39.99">$39.99</span></span>
+                                <span class="hover:text-white cursor-pointer transition-colors flex items-center"><span class="w-2 h-2 rounded-full bg-slate-600 mr-2"></span>.ai <span class="text-brand-400 ml-1 dynamic-price" data-base-price="79.99">$79.99</span></span>
                             </div>
                         </div>
                     </div>
-                    <h2 id="video-title" class="text-2xl md:text-3xl font-bold text-slate-900">Interactive Lecture</h2>
-                    <p class="text-slate-500 font-medium">Instructor: Dr. A. Sharma • High Definition • Board Aligned</p>
                 </div>
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 h-fit">
-                    <h3 class="font-bold text-lg mb-4 text-slate-900">Resources</h3>
-                    <button onclick="generateRealPDF('Chapter_Notes.pdf', 'notes')" class="w-full bg-white border border-slate-200 p-4 rounded-xl flex items-center justify-between hover:border-blue-600 hover:shadow-md transition-all mb-3 text-left">
-                        <div class="flex items-center"><i class="fas fa-file-alt text-xl text-blue-600 mr-3"></i> <div><h4 class="font-bold text-sm">Detailed Notes</h4><p class="text-xs text-slate-500">PDF Document</p></div></div>
-                        <i class="fas fa-download text-slate-400"></i>
-                    </button>
-                    <button onclick="startQuiz('Mixed')" class="w-full bg-white border border-slate-200 p-4 rounded-xl flex items-center justify-between hover:border-blue-600 hover:shadow-md transition-all text-left">
-                        <div class="flex items-center"><i class="fas fa-question-circle text-xl text-blue-600 mr-3"></i> <div><h4 class="font-bold text-sm">Concept MCQ Quiz</h4><p class="text-xs text-slate-500">Test Knowledge</p></div></div>
-                        <i class="fas fa-chevron-right text-slate-400"></i>
-                    </button>
+            </div>
+        </section>
+
+        <!-- Global Trust Bar -->
+        <div class="bg-white border-b border-gray-200 py-12 reveal-up">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-8">Trusted by Fortune 500 Companies Globally</p>
+                <div class="flex flex-wrap justify-center items-center gap-10 md:gap-20 opacity-60 grayscale hover:grayscale-0 transition-all duration-700">
+                    <div class="flex items-center text-3xl font-black text-slate-800 tracking-tighter"><svg class="w-10 h-10 mr-2 text-brand-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg> NEXUS_CORP</div>
+                    <div class="flex items-center text-3xl font-black text-slate-800 tracking-tighter"><svg class="w-10 h-10 mr-2 text-orange-600" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path></svg> SYNAPSE.AI</div>
+                    <div class="flex items-center text-3xl font-black text-slate-800 tracking-tighter"><svg class="w-10 h-10 mr-2 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> VELOCITY</div>
+                    <div class="flex items-center text-3xl font-black text-slate-800 tracking-tighter"><svg class="w-10 h-10 mr-2 text-brand-500" fill="currentColor" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path></svg> DATA_STREAM</div>
                 </div>
             </div>
         </div>
 
-        <!-- 5. MCQ DASHBOARD VIEW -->
-        <div id="view-mcq-dashboard" class="view-section pt-12 pb-20 px-4 max-w-7xl mx-auto">
-            <div class="bg-gradient-to-r from-slate-900 to-blue-900 rounded-3xl p-8 md:p-12 text-white shadow-xl mb-12">
-                <div class="flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-6 backdrop-blur-sm">
-                    <i class="fas fa-random text-3xl text-blue-300"></i>
+        <!-- Features Grid -->
+        <section class="py-28 bg-slate-50 relative bg-dots-pattern">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center max-w-3xl mx-auto mb-20 reveal-up">
+                    <h2 class="text-sm font-bold text-brand-600 uppercase tracking-widest mb-3">Architectural Superiority</h2>
+                    <h3 class="text-4xl md:text-5xl font-extrabold text-corporate-900 mb-6 tracking-tight">Engineered for Scale, Built for Performance.</h3>
+                    <p class="text-xl text-slate-600 leading-relaxed">
+                        Every Xorvila Hub environment is provisioned on enterprise-grade infrastructure, backed by redundant power, networking, and industry-leading SLAs.
+                    </p>
                 </div>
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Randomized MCQ Test Center</h1>
-                <p class="text-lg text-blue-100 max-w-2xl mb-8">Evaluate your preparation with timed Multiple Choice Questions. Every time you start a test, the system generates a new set of random questions from our massive question bank.</p>
-            </div>
-            <h2 class="text-2xl font-bold text-slate-900 mb-6 px-2">Select a Topic to Generate Random Test</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-blue-500 hover:shadow-lg transition-all flex flex-col cursor-pointer" onclick="startQuiz('Science')">
-                    <div class="flex justify-between items-start mb-4"><span class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">Science</span><i class="fas fa-flask text-2xl text-blue-500"></i></div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Science Core Concepts</h3>
-                    <div class="flex items-center text-sm text-slate-500 mb-6 font-medium space-x-4"><span class="flex items-center"><i class="fas fa-random mr-1 text-blue-500"></i> 5 Random MCQs</span></div>
-                    <button class="w-full bg-blue-50 text-blue-700 font-bold py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-colors mt-auto flex justify-center items-center">Start Generated Test <i class="fas fa-arrow-right ml-2"></i></button>
-                </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-blue-500 hover:shadow-lg transition-all flex flex-col cursor-pointer" onclick="startQuiz('Mathematics')">
-                    <div class="flex justify-between items-start mb-4"><span class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">Mathematics</span><i class="fas fa-square-root-variable text-2xl text-blue-500"></i></div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Algebra & General Math</h3>
-                    <div class="flex items-center text-sm text-slate-500 mb-6 font-medium space-x-4"><span class="flex items-center"><i class="fas fa-random mr-1 text-blue-500"></i> 5 Random MCQs</span></div>
-                    <button class="w-full bg-blue-50 text-blue-700 font-bold py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-colors mt-auto flex justify-center items-center">Start Generated Test <i class="fas fa-arrow-right ml-2"></i></button>
-                </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:border-blue-500 hover:shadow-lg transition-all flex flex-col cursor-pointer" onclick="startQuiz('Mixed')">
-                    <div class="flex justify-between items-start mb-4"><span class="bg-slate-100 text-slate-600 text-xs font-bold px-3 py-1 rounded-full">Mixed GK</span><i class="fas fa-globe text-2xl text-blue-500"></i></div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Grand Mock Test</h3>
-                    <div class="flex items-center text-sm text-slate-500 mb-6 font-medium space-x-4"><span class="flex items-center"><i class="fas fa-random mr-1 text-blue-500"></i> 5 Random MCQs</span></div>
-                    <button class="w-full bg-blue-50 text-blue-700 font-bold py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-colors mt-auto flex justify-center items-center">Start Generated Test <i class="fas fa-arrow-right ml-2"></i></button>
-                </div>
-            </div>
-        </div>
 
-        <!-- 6. LIVE MCQ QUIZ VIEW -->
-        <div id="view-quiz" class="view-section pt-12 pb-20 px-4 max-w-3xl mx-auto">
-            <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <div class="font-bold text-slate-600 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100" id="quiz-counter">Question 1 of 5</div>
-                <div class="flex items-center text-red-600 font-bold bg-red-50 px-4 py-2 rounded-xl border border-red-100"><i class="fas fa-clock mr-2"></i> <span id="quiz-timer">05:00</span></div>
-            </div>
-            <div class="w-full h-2 bg-slate-100 rounded-full mb-8 overflow-hidden">
-                <div id="quiz-progress-bar" class="h-full bg-blue-500 rounded-full transition-all duration-300" style="width: 0%"></div>
-            </div>
-            <div class="bg-white rounded-3xl border border-slate-200 p-6 md:p-10 shadow-lg relative">
-                <span class="absolute top-4 right-6 text-xs font-bold text-blue-400 bg-blue-50 px-2 py-1 rounded-md" id="q-category-tag">Category</span>
-                <h3 id="quiz-question" class="text-2xl md:text-3xl font-bold text-slate-900 mb-10 mt-4 leading-relaxed">Question Text</h3>
-                <div id="quiz-options" class="space-y-4"></div>
-            </div>
-        </div>
-
-        <!-- 6.5 QUIZ RESULT VIEW -->
-        <div id="view-quiz-result" class="view-section pt-20 pb-20 px-4 max-w-2xl mx-auto text-center">
-            <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-trophy text-5xl"></i></div>
-            <h2 class="text-4xl font-extrabold text-slate-900 mb-4">MCQ Test Complete</h2>
-            <div class="bg-white border border-slate-200 shadow-lg rounded-3xl p-8 mb-8 relative overflow-hidden">
-                <div id="result-color-bar" class="absolute top-0 left-0 w-full h-2 bg-green-500"></div>
-                <p class="text-slate-500 text-lg mb-2 font-medium">Your Final Score</p>
-                <p class="text-7xl font-bold text-slate-900 mb-4"><span id="result-score">0</span> <span class="text-3xl text-slate-400" id="result-total">/ 5</span></p>
-                <div id="result-accuracy" class="inline-block bg-slate-50 px-6 py-2 rounded-full font-bold text-blue-600 border border-slate-200">Accuracy: 0%</div>
-            </div>
-            <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 justify-center">
-                <button onclick="navigateTo('mcq-dashboard')" class="bg-white border-2 border-slate-200 text-slate-900 px-8 py-4 rounded-xl font-bold hover:bg-slate-50 w-full sm:w-auto">Take Another Test</button>
-                <button onclick="navigateTo('home')" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-700 w-full sm:w-auto shadow-lg shadow-blue-600/20">Dashboard</button>
-            </div>
-        </div>
-
-        <!-- 7. EXAM CENTER VIEW -->
-        <div id="view-exams" class="view-section pt-12 pb-20 px-4 max-w-7xl mx-auto">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">Real PDF Repository</h1>
-                <p class="text-lg text-slate-500">Download fully authentic, completely correct formulas and past paper PDFs. (Generated Live using jsPDF)</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-400 transition-all flex flex-col items-center text-center group">
-                    <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors"><i class="fas fa-calculator text-4xl"></i></div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-3">Master Formula Book</h3>
-                    <p class="text-slate-500 text-sm mb-8 px-4">Download real Math & Physics formulas (Newton's laws, Algebra, etc.)</p>
-                    <button onclick="generateRealPDF('Formula_Book_2026.pdf', 'formula')" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 flex justify-center items-center mt-auto transition-colors">
-                        <i class="fas fa-download mr-2"></i> Download Formulas PDF
-                    </button>
-                </div>
-                <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm hover:shadow-xl hover:border-blue-400 transition-all flex flex-col items-center text-center group">
-                    <div class="w-20 h-20 bg-slate-100 text-slate-900 rounded-3xl flex items-center justify-center mb-6 group-hover:bg-slate-900 group-hover:text-white transition-colors"><i class="fas fa-file-contract text-4xl"></i></div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-3">Previous Year Papers</h3>
-                    <p class="text-slate-500 text-sm mb-8 px-4">Actual board questions compiled into a neat, printable document format.</p>
-                    <button onclick="generateRealPDF('Past_Papers_Archive.pdf', 'papers')" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 flex justify-center items-center mt-auto transition-colors">
-                        <i class="fas fa-download mr-2"></i> Download Past Papers PDF
-                    </button>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl p-10 shadow-sm border border-gray-200 feature-card reveal-up" style="transition-delay: 0.1s;">
+                        <div class="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
+                        </div>
+                        <h4 class="text-2xl font-bold text-corporate-900 mb-4">Latest Generation Compute</h4>
+                        <p class="text-slate-600 leading-relaxed">Powered exclusively by dual AMD EPYC™ 9004 series processors and Intel Xeon® Scalable CPUs.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-10 shadow-sm border border-gray-200 feature-card reveal-up" style="transition-delay: 0.2s;">
+                        <div class="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                        </div>
+                        <h4 class="text-2xl font-bold text-corporate-900 mb-4">NVMe Gen4 Storage</h4>
+                        <p class="text-slate-600 leading-relaxed">Redundant RAID 10 NVMe storage clusters provide microsecond latency and unparalleled data throughput.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-10 shadow-sm border border-gray-200 feature-card reveal-up" style="transition-delay: 0.3s;">
+                        <div class="w-16 h-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        </div>
+                        <h4 class="text-2xl font-bold text-corporate-900 mb-4">Advanced L7 DDoS Mitigation</h4>
+                        <p class="text-slate-600 leading-relaxed">Inline, real-time protection capable of absorbing attacks up to 2.5 Tbps seamlessly without degrading network performance.</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
+        <!-- Global Datacenter Locations (Fully Restored) -->
+        <section class="py-24 bg-corporate-900 text-white relative overflow-hidden border-y border-slate-800 reveal-fade">
+            <div class="absolute inset-0 opacity-10 pointer-events-none">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <circle fill="currentColor" cx="2" cy="2" r="1.5"></circle>
+                        </pattern>
+                    </defs>
+                    <rect x="0" y="0" width="100%" height="100%" fill="url(#dotPattern)"></rect>
+                </svg>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="flex flex-col lg:flex-row gap-16 items-center">
+                    <div class="lg:w-1/2 reveal-up">
+                        <h2 class="text-sm font-bold text-brand-400 uppercase tracking-widest mb-3">Global Edge Network</h2>
+                        <h3 class="text-4xl font-extrabold mb-6">Proximity dictates latency. Deploy where your users are.</h3>
+                        <p class="text-slate-400 text-lg mb-8 leading-relaxed">
+                            Our global footprint consists of 12 Tier-4 equivalent data centers strategically located at major internet peering exchanges. Achieve sub-30ms latency to 85% of the global broadband population.
+                        </p>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="border-l-2 border-brand-500 pl-4 py-1">
+                                <h4 class="font-bold text-white">North America</h4>
+                                <p class="text-slate-400 text-sm">New York, Chicago, LA, Toronto</p>
+                            </div>
+                            <div class="border-l-2 border-brand-500 pl-4 py-1">
+                                <h4 class="font-bold text-white">Europe</h4>
+                                <p class="text-slate-400 text-sm">London, Frankfurt, Amsterdam, Paris</p>
+                            </div>
+                            <div class="border-l-2 border-brand-500 pl-4 py-1">
+                                <h4 class="font-bold text-white">Asia Pacific</h4>
+                                <p class="text-slate-400 text-sm">Singapore, Tokyo, Sydney, Mumbai (India)</p>
+                            </div>
+                            <div class="border-l-2 border-brand-500 pl-4 py-1">
+                                <h4 class="font-bold text-white">Middle East</h4>
+                                <p class="text-slate-400 text-sm">Dubai (Coming Q4)</p>
+                            </div>
+                        </div>
+                        
+                        <button onclick="navigateTo('contact')" class="interactive-btn mt-10 px-6 py-3 border border-slate-600 hover:border-brand-500 rounded-lg font-medium transition-colors flex items-center">
+                            Request Infrastructure Map & IP Tests
+                            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                    </div>
+                    
+                    <div class="lg:w-1/2 w-full reveal-up" style="transition-delay: 0.2s;">
+                        <!-- Datacenter Specs Widget -->
+                        <div class="bg-corporate-800 rounded-2xl border border-slate-700 p-8 shadow-2xl">
+                            <h4 class="text-xl font-bold border-b border-slate-700 pb-4 mb-6 flex justify-between items-center">
+                                Standard Facility Specifications
+                                <span class="bg-green-500/20 text-green-400 text-xs px-2 py-1 rounded border border-green-500/30">Tier-4 Equivalent</span>
+                            </h4>
+                            
+                            <ul class="space-y-5">
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-brand-400 mr-4 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    <div>
+                                        <h5 class="font-bold text-white">Power Redundancy (2N+1)</h5>
+                                        <p class="text-slate-400 text-sm mt-1">Dual independent power feeds backed by modular UPS systems and N+1 diesel generators with 72-hour fuel reserves on-site.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-brand-400 mr-4 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                    <div>
+                                        <h5 class="font-bold text-white">Compliance & Security</h5>
+                                        <p class="text-slate-400 text-sm mt-1">SOC 1/2/3, ISO 27001, and PCI-DSS compliant. Multi-factor biometric access controls, mantrap entries, and 24/7 armed security.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-6 h-6 text-brand-400 mr-4 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                    <div>
+                                        <h5 class="font-bold text-white">Network Transit Topology</h5>
+                                        <p class="text-slate-400 text-sm mt-1">Minimum 4 separate physical fiber entrances per facility, utilizing distinct dark fiber paths connected to BGP optimized edge routers.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Blocks -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="bg-slate-50 border border-slate-200 p-10 rounded-3xl relative overflow-hidden feature-card reveal-up">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-100 rounded-bl-full -mr-10 -mt-10"></div>
+                        <h3 class="text-3xl font-extrabold text-corporate-900 mb-4 relative z-10">Enterprise Cloud VPS</h3>
+                        <p class="text-slate-600 mb-8 relative z-10 text-lg">Scalable, highly-available virtual instances with full root access.</p>
+                        <button onclick="navigateTo('vps')" class="interactive-btn relative z-10 bg-corporate-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-600 transition-colors shadow-lg">Configure Instance</button>
+                    </div>
+                    <div class="bg-corporate-900 border border-corporate-800 p-10 rounded-3xl relative overflow-hidden feature-card reveal-up" style="transition-delay: 0.2s;">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-600/30 rounded-bl-full -mr-10 -mt-10"></div>
+                        <h3 class="text-3xl font-extrabold text-white mb-4 relative z-10">Bare Metal Servers</h3>
+                        <p class="text-slate-300 mb-8 relative z-10 text-lg">Single-tenant physical servers providing raw compute power.</p>
+                        <button onclick="navigateTo('dedicated')" class="interactive-btn relative z-10 bg-brand-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-500 transition-colors shadow-lg">View Inventory</button>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 text-center text-sm font-medium text-slate-500">
-            <span class="font-bold text-slate-900 mr-1">EduPro<span class="text-blue-600">.</span></span> &copy; 2026 Premium LMS. Real PDF Engine Integrated.
+    <!-- ========================================== -->
+    <!-- 2. SHARED HOSTING (RESTORED MASSIVE TABLE) -->
+    <!-- ========================================== -->
+    <main id="page-shared" class="page-section">
+        <section class="bg-corporate-950 text-white pt-24 pb-16 text-center border-b border-white/10 relative">
+            <div class="absolute inset-0 bg-grid-pattern opacity-10"></div>
+            <div class="relative z-10 max-w-4xl mx-auto px-4 reveal-up">
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">Business Web Hosting</h1>
+                <p class="text-xl text-slate-400 leading-relaxed">Secure, high-performance shared environments utilizing cPanel/WHM. Ideal for SMEs.</p>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="py-24 bg-slate-50 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Toggle -->
+                <div class="flex justify-center items-center space-x-4 mb-16 reveal-fade">
+                    <span class="text-sm font-bold text-corporate-900 uppercase tracking-wider" id="shared-mo-label">Monthly</span>
+                    <button onclick="toggleBilling('shared')" id="shared-toggle-btn" class="relative inline-flex h-8 w-16 items-center rounded-full bg-slate-300 transition-colors focus:outline-none cursor-pointer shadow-inner">
+                        <span id="shared-toggle-ball" class="inline-block h-6 w-6 transform rounded-full bg-white transition-transform translate-x-1 shadow"></span>
+                    </button>
+                    <span class="text-sm font-bold text-slate-500 uppercase tracking-wider" id="shared-yr-label">
+                        Annually <span class="ml-2 px-2 py-1 rounded text-[10px] bg-green-500 text-white shadow-sm">-25% Discount</span>
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <!-- Basic -->
+                    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all flex flex-col h-full reveal-up">
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-extrabold text-corporate-900 mb-1">Essential</h3>
+                            <p class="text-slate-500 text-sm">Perfect for establishing digital presence.</p>
+                        </div>
+                        <div class="mb-8 flex items-baseline text-corporate-900">
+                            <span class="curr-sym text-xl font-bold text-slate-400 mr-1">$</span>
+                            <span class="text-6xl font-black tracking-tighter"><span class="shared-price-val dynamic-price" data-base-price="5.99" data-mo="5.99" data-yr="4.49">5.99</span></span>
+                            <span class="ml-2 text-lg font-medium text-slate-500">/mo</span>
+                        </div>
+                        <div class="space-y-4 mb-10 flex-grow">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-500 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-700"><strong>1</strong> Primary Domain</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-500 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-700"><strong>25 GB</strong> Enterprise NVMe Storage</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-500 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-700"><strong>1 TB</strong> Premium Bandwidth</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-500 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-700"><strong>5</strong> Corporate Email Accounts</span>
+                            </div>
+                            <div class="flex items-start opacity-40">
+                                <svg class="w-5 h-5 text-slate-400 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> 
+                                <span class="text-slate-700 line-through">Dedicated IP Address</span>
+                            </div>
+                        </div>
+                        <button class="interactive-btn w-full py-4 rounded-xl font-bold text-corporate-900 bg-slate-100 hover:bg-slate-200 transition-colors border border-slate-200 mt-auto" onclick="showSystemToast('Essential plan added to cart.', 'success')">Select Essential</button>
+                    </div>
+
+                    <!-- Pro -->
+                    <div class="relative bg-corporate-950 rounded-2xl p-8 border border-brand-500 shadow-2xl shadow-brand-500/20 lg:-mt-4 lg:mb-4 flex flex-col h-full z-10 reveal-up" style="transition-delay: 0.1s;">
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <span class="bg-gradient-to-r from-brand-600 to-orange-600 text-white px-5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg">Industry Standard</span>
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-extrabold text-white mb-1">Professional</h3>
+                            <p class="text-slate-400 text-sm">For growing SaaS & e-commerce applications.</p>
+                        </div>
+                        <div class="mb-8 flex items-baseline text-white">
+                            <span class="curr-sym text-xl font-bold text-brand-400 mr-1">$</span>
+                            <span class="text-6xl font-black tracking-tighter"><span class="shared-price-val dynamic-price" data-base-price="12.99" data-mo="12.99" data-yr="9.75">12.99</span></span>
+                            <span class="ml-2 text-lg font-medium text-slate-400">/mo</span>
+                        </div>
+                        <div class="space-y-4 mb-10 flex-grow border-t border-slate-800 pt-6">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-400 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-300"><strong>Unlimited</strong> Domains Hosted</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-400 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-300"><strong>100 GB</strong> Enterprise NVMe Storage</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-400 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-300"><strong>Unmetered</strong> Premium Bandwidth</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-400 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-300"><strong>Unlimited</strong> Corporate Emails</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-400 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-300">Free Wildcard SSL Certificate</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-400 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-300">Automated Daily JetBackup</span>
+                            </div>
+                        </div>
+                        <button class="interactive-btn w-full py-4 rounded-xl font-bold text-white bg-brand-600 hover:bg-brand-500 transition-colors shadow-lg shadow-brand-600/30 border border-brand-500 mt-auto" onclick="showSystemToast('Professional plan preparing for deployment...', 'success')">Deploy Professional</button>
+                    </div>
+
+                    <!-- Corp -->
+                    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all flex flex-col h-full reveal-up" style="transition-delay: 0.2s;">
+                        <div class="mb-6">
+                            <h3 class="text-2xl font-extrabold text-corporate-900 mb-1">Corporate</h3>
+                            <p class="text-slate-500 text-sm">Maximum resources for heavy traffic.</p>
+                        </div>
+                        <div class="mb-8 flex items-baseline text-corporate-900">
+                            <span class="curr-sym text-xl font-bold text-slate-400 mr-1">$</span>
+                            <span class="text-6xl font-black tracking-tighter"><span class="shared-price-val dynamic-price" data-base-price="24.99" data-mo="24.99" data-yr="18.75">24.99</span></span>
+                            <span class="ml-2 text-lg font-medium text-slate-500">/mo</span>
+                        </div>
+                        <div class="space-y-4 mb-10 flex-grow">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-500 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-700"><strong>Unlimited</strong> Domains Hosted</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-500 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-700"><strong>250 GB</strong> Enterprise NVMe Storage</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-500 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-700"><strong>2x</strong> CPU & RAM Allocation</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-500 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-700 font-bold text-brand-700">Included Dedicated IPv4</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-500 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-700 font-bold text-brand-700">LiteSpeed Web Server (LWS)</span>
+                            </div>
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-brand-500 mr-3 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> 
+                                <span class="text-slate-700">Hourly Offsite Backups</span>
+                            </div>
+                        </div>
+                        <button class="interactive-btn w-full py-4 rounded-xl font-bold text-corporate-900 bg-slate-100 hover:bg-slate-200 transition-colors border border-slate-200 mt-auto" onclick="showSystemToast('Corporate Tier allocated to your account.', 'success')">Select Corporate</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESTORED: Massive Technical Comparison Matrix for Shared Hosting -->
+        <section class="py-24 bg-white border-t border-slate-200 reveal-up">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-extrabold text-corporate-900 mb-4">Comprehensive Feature Matrix</h2>
+                    <p class="text-slate-500 max-w-2xl mx-auto">A deep-dive technical comparison of our shared hosting environments to assist your procurement decisions.</p>
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm">
+                    <table class="w-full text-left border-collapse min-w-[800px]">
+                        <thead>
+                            <tr class="bg-corporate-950 text-white">
+                                <th class="p-5 font-bold text-sm tracking-wider uppercase w-1/4">Technical Specification</th>
+                                <th class="p-5 font-bold text-sm tracking-wider uppercase text-center w-1/4 border-l border-slate-700">Essential</th>
+                                <th class="p-5 font-bold text-sm tracking-wider uppercase text-center w-1/4 border-l border-slate-700 bg-brand-900 text-brand-100">Professional</th>
+                                <th class="p-5 font-bold text-sm tracking-wider uppercase text-center w-1/4 border-l border-slate-700">Corporate</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-sm">
+                            <!-- Category: Core Compute -->
+                            <tr class="bg-slate-100"><td colspan="4" class="p-3 font-bold text-corporate-900 uppercase tracking-widest text-xs">Core Resources & Allocation</td></tr>
+                            <tr class="table-row-hover">
+                                <td class="p-5 font-medium text-slate-700">LVE CPU Allocation</td>
+                                <td class="p-5 text-center text-slate-600">1 Core (100%)</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-semibold bg-brand-50/30">2 Cores (200%)</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-bold text-corporate-900">4 Cores (400%)</td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td class="p-5 font-medium text-slate-700">Physical Memory (RAM)</td>
+                                <td class="p-5 text-center text-slate-600">1024 MB</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-semibold bg-brand-50/30">2048 MB</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-bold text-corporate-900">4096 MB</td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td class="p-5 font-medium text-slate-700">Concurrent Connections (EP)</td>
+                                <td class="p-5 text-center text-slate-600">20</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-semibold bg-brand-50/30">40</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-bold text-corporate-900">100</td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td class="p-5 font-medium text-slate-700">I/O Speed Limit</td>
+                                <td class="p-5 text-center text-slate-600">10 MB/s</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-semibold bg-brand-50/30">25 MB/s</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-bold text-corporate-900">50 MB/s</td>
+                            </tr>
+                            
+                            <!-- Category: Software & Stack -->
+                            <tr class="bg-slate-100"><td colspan="4" class="p-3 font-bold text-corporate-900 uppercase tracking-widest text-xs">Software Stack & Management</td></tr>
+                            <tr class="table-row-hover">
+                                <td class="p-5 font-medium text-slate-700">Control Panel Interface</td>
+                                <td class="p-5 text-center text-slate-600">cPanel Latest</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 bg-brand-50/30">cPanel Latest</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100">cPanel Latest</td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td class="p-5 font-medium text-slate-700">Web Server Software</td>
+                                <td class="p-5 text-center text-slate-600">Apache 2.4 + Nginx Proxy</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 bg-brand-50/30">Apache 2.4 + Nginx Proxy</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-bold text-brand-600">LiteSpeed Enterprise (LWS)</td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td class="p-5 font-medium text-slate-700">PHP Version Selection</td>
+                                <td class="p-5 text-center text-slate-600">7.4, 8.0, 8.1, 8.2, 8.3</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 bg-brand-50/30">7.4, 8.0, 8.1, 8.2, 8.3</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100">7.4, 8.0, 8.1, 8.2, 8.3</td>
+                            </tr>
+
+                            <!-- Category: Security & Protection -->
+                            <tr class="bg-slate-100"><td colspan="4" class="p-3 font-bold text-corporate-900 uppercase tracking-widest text-xs">Security & Data Integrity</td></tr>
+                            <tr class="table-row-hover">
+                                <td class="p-5 font-medium text-slate-700">Imunify360 Proactive Defense</td>
+                                <td class="p-5 text-center text-brand-500"><svg class="w-5 h-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></td>
+                                <td class="p-5 text-center text-brand-500 border-l border-slate-100 bg-brand-50/30"><svg class="w-5 h-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></td>
+                                <td class="p-5 text-center text-brand-500 border-l border-slate-100"><svg class="w-5 h-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td class="p-5 font-medium text-slate-700">ModSecurity Web Application Firewall</td>
+                                <td class="p-5 text-center text-brand-500"><svg class="w-5 h-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></td>
+                                <td class="p-5 text-center text-brand-500 border-l border-slate-100 bg-brand-50/30"><svg class="w-5 h-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></td>
+                                <td class="p-5 text-center text-brand-500 border-l border-slate-100"><svg class="w-5 h-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td class="p-5 font-medium text-slate-700">Backup Frequency (JetBackup 5)</td>
+                                <td class="p-5 text-center text-slate-600">Weekly Offsite</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-semibold bg-brand-50/30">Daily Offsite (14 Days)</td>
+                                <td class="p-5 text-center text-slate-600 border-l border-slate-100 font-bold text-corporate-900">Hourly Offsite (30 Days)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 3. CLOUD VPS SERVERS PAGE                  -->
+    <!-- ========================================== -->
+    <main id="page-vps" class="page-section">
+        <section class="bg-corporate-950 text-white pt-24 pb-16 text-center border-b-4 border-brand-500 relative">
+            <div class="absolute inset-0 bg-dots-pattern opacity-10"></div>
+            <div class="relative z-10 max-w-4xl mx-auto px-4 reveal-up">
+                <span class="bg-brand-500/20 text-brand-300 text-xs px-3 py-1 rounded-full uppercase tracking-widest font-bold mb-4 inline-block border border-brand-500/30">KVM Virtualization</span>
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">Enterprise Cloud VPS</h1>
+                <p class="text-xl text-slate-400 leading-relaxed">Dedicated computational resources with full root access.</p>
+            </div>
+        </section>
+
+        <!-- OS Selector Interactive -->
+        <div class="bg-white py-10 border-b border-gray-200 reveal-fade">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <p class="text-slate-500 font-bold uppercase tracking-wider mb-6 text-sm">Select Your Preferred Environment Stack</p>
+                <div class="flex flex-wrap justify-center gap-4" id="os-container">
+                    <button class="os-btn interactive-btn px-6 py-3 border-2 border-brand-500 bg-brand-50 rounded-xl text-brand-700 font-bold flex items-center shadow-sm transition-all" onclick="selectOS(this, 'Ubuntu 22.04 LTS')">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg> Ubuntu 22.04
+                    </button>
+                    <button class="os-btn interactive-btn px-6 py-3 border border-gray-200 rounded-xl text-slate-600 font-medium flex items-center transition-all hover:border-brand-300" onclick="selectOS(this, 'AlmaLinux 9')">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg> AlmaLinux 9
+                    </button>
+                    <button class="os-btn interactive-btn px-6 py-3 border border-gray-200 rounded-xl text-slate-600 font-medium flex items-center transition-all hover:border-brand-300" onclick="selectOS(this, 'Debian 12')">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg> Debian 12
+                    </button>
+                    <button class="os-btn interactive-btn px-6 py-3 border border-gray-200 rounded-xl text-slate-600 font-medium flex items-center transition-all hover:border-brand-300" onclick="selectOS(this, 'Windows Server 2022')">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg> Windows Server
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VPS Table -->
+        <section class="py-24 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal-up">
+                <div class="overflow-x-auto rounded-2xl shadow-xl border border-gray-200 bg-white">
+                    <table class="w-full text-left border-collapse min-w-[900px]">
+                        <thead>
+                            <tr class="bg-corporate-900 text-white border-b border-corporate-800">
+                                <th class="p-6 font-bold text-sm uppercase">Instance Identifier</th>
+                                <th class="p-6 font-bold text-sm uppercase">vCPU</th>
+                                <th class="p-6 font-bold text-sm uppercase">RAM</th>
+                                <th class="p-6 font-bold text-sm uppercase">Storage</th>
+                                <th class="p-6 font-bold text-sm text-right">Monthly Rate</th>
+                                <th class="p-6 w-32"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <!-- VPS 1 -->
+                            <tr class="hover:bg-brand-50 transition-colors group">
+                                <td class="p-6 font-bold text-corporate-900 text-lg">CX-Standard-2</td>
+                                <td class="p-6 text-slate-600 font-medium">2 Cores</td>
+                                <td class="p-6 text-slate-600 font-medium">4 GB</td>
+                                <td class="p-6 text-slate-600 font-medium">80 GB Gen4</td>
+                                <td class="p-6 text-right">
+                                    <div class="font-bold text-brand-600 text-2xl"><span class="curr-sym">$</span><span class="dynamic-price" data-base-price="14.00">14.00</span></div>
+                                </td>
+                                <td class="p-6 text-right"><button class="interactive-btn px-5 py-2.5 bg-white border border-slate-300 text-corporate-900 font-bold rounded-lg hover:border-brand-500 hover:text-brand-600 transition shadow-sm w-full" onclick="showSystemToast('CX-Standard-2 Instance Provisioning Started...', 'success')">Deploy</button></td>
+                            </tr>
+                            <!-- VPS 2 -->
+                            <tr class="bg-brand-50/50 border-l-4 border-l-brand-500 relative">
+                                <td class="p-6 font-bold text-corporate-900 text-lg">CX-Performance-4 <span class="text-xs bg-brand-500 text-white px-2 py-0.5 rounded ml-2 shadow-sm">Recommended</span></td>
+                                <td class="p-6 text-slate-600 font-medium">4 Cores</td>
+                                <td class="p-6 text-slate-600 font-medium">8 GB</td>
+                                <td class="p-6 text-slate-600 font-medium">160 GB Gen4</td>
+                                <td class="p-6 text-right">
+                                    <div class="font-bold text-brand-600 text-3xl"><span class="curr-sym">$</span><span class="dynamic-price" data-base-price="28.00">28.00</span></div>
+                                </td>
+                                <td class="p-6 text-right"><button class="interactive-btn px-5 py-3 bg-brand-600 text-white font-bold rounded-lg hover:bg-brand-700 transition shadow-lg shadow-brand-500/30 w-full" onclick="showSystemToast('CX-Performance-4 Added. OS Image applying...', 'success')">Deploy</button></td>
+                            </tr>
+                            <!-- VPS 3 -->
+                            <tr class="hover:bg-brand-50 transition-colors group">
+                                <td class="p-6 font-bold text-corporate-900 text-lg">CX-Enterprise-8</td>
+                                <td class="p-6 text-slate-600 font-medium">8 Cores</td>
+                                <td class="p-6 text-slate-600 font-medium">16 GB</td>
+                                <td class="p-6 text-slate-600 font-medium">320 GB Gen4</td>
+                                <td class="p-6 text-right">
+                                    <div class="font-bold text-brand-600 text-2xl"><span class="curr-sym">$</span><span class="dynamic-price" data-base-price="56.00">56.00</span></div>
+                                </td>
+                                <td class="p-6 text-right"><button class="interactive-btn px-5 py-2.5 bg-white border border-slate-300 text-corporate-900 font-bold rounded-lg hover:border-brand-500 hover:text-brand-600 transition shadow-sm w-full" onclick="showSystemToast('Enterprise Instance Allocation initiated.', 'success')">Deploy</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESTORED: API Block -->
+        <section class="py-20 bg-white border-t border-gray-200 reveal-up">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <h2 class="text-sm font-bold text-brand-500 uppercase tracking-widest mb-3">Infrastructure as Code (IaC)</h2>
+                    <h3 class="text-4xl font-extrabold text-corporate-900 mb-6">Fully RESTful API & Automation Ready</h3>
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                        Control every aspect of your virtual infrastructure programmatically. Deploy, destroy, reboot, and resize instances automatically based on your load metrics.
+                    </p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center text-slate-700 font-medium"><svg class="w-5 h-5 text-brand-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Official Terraform Provider Available</li>
+                        <li class="flex items-center text-slate-700 font-medium"><svg class="w-5 h-5 text-brand-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Ansible Modules & Playbooks</li>
+                    </ul>
+                </div>
+                <div class="md:w-1/2 w-full">
+                    <div class="bg-corporate-950 rounded-xl p-6 shadow-2xl border border-slate-800 relative overflow-hidden">
+                        <div class="flex space-x-2 mb-4 border-b border-slate-800 pb-4">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <pre class="text-sm font-mono text-slate-300 overflow-x-auto"><code><span class="text-pink-400">curl</span> -X POST \
+  https://api.xorvilahub.com/v1/instances \
+  -H <span class="text-green-300">'Authorization: Bearer YOUR_API_TOKEN'</span> \
+  -d <span class="text-yellow-300">'{
+    "name": "web-node-04",
+    "size": "cx-performance-4"
+  }'</span></code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 4. DEDICATED SERVERS PAGE                  -->
+    <!-- ========================================== -->
+    <main id="page-dedicated" class="page-section">
+        <section class="bg-corporate-950 text-white py-28 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-dots-pattern opacity-20"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-corporate-950 z-0"></div>
+            <div class="relative z-10 max-w-5xl mx-auto px-4 reveal-up">
+                <span class="bg-brand-500/20 text-brand-300 text-xs px-3 py-1 rounded-full uppercase tracking-widest font-bold mb-6 inline-block border border-brand-500/30">Single Tenant Physical Hardware</span>
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tighter">Bare Metal Provisioning</h1>
+                <p class="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">Absolute performance, zero virtualization overhead, and strict tenant isolation. Deployed automatically in under 20 minutes across our global infrastructure.</p>
+            </div>
+        </section>
+
+        <!-- Inventory -->
+        <section class="py-24 bg-white text-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Dedi 1 -->
+                    <div class="border border-slate-200 rounded-2xl p-8 hover:border-brand-500 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col bg-slate-50 reveal-up">
+                        <div class="flex justify-between items-start mb-6 border-b border-slate-200 pb-6">
+                            <div>
+                                <h3 class="text-2xl font-extrabold text-corporate-900 leading-none mb-2">Intel Xeon® E-2274G</h3>
+                                <p class="text-slate-500 font-mono text-sm">4 Cores / 8 Threads @ 4.00 GHz Base</p>
+                            </div>
+                            <div class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded border border-emerald-200 uppercase">Available</div>
+                        </div>
+                        <div class="text-4xl font-extrabold text-corporate-900 mb-8"><span class="curr-sym">$</span><span class="dynamic-price" data-base-price="119.00">119.00</span><span class="text-lg text-slate-400 font-normal">/mo</span></div>
+                        <ul class="space-y-4 mb-10 text-slate-700 flex-grow font-medium">
+                            <li class="flex items-center"><svg class="w-5 h-5 text-slate-400 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong>32 GB</strong> DDR4 ECC 2666MHz RAM</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-slate-400 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong>2x 500GB</strong> NVMe (Software RAID 1)</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-slate-400 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong>10 TB</strong> Premium Outbound Bandwidth</li>
+                        </ul>
+                        <button class="interactive-btn w-full py-4 border-2 border-slate-300 text-corporate-900 font-bold rounded-xl hover:border-brand-600 hover:text-brand-600 transition mt-auto" onclick="showSystemToast('Allocating physical rack space for Intel Xeon...', 'success')">Provision Hardware</button>
+                    </div>
+
+                    <!-- Dedi 2 -->
+                    <div class="border-2 border-brand-500 rounded-2xl p-8 shadow-2xl lg:-mt-4 lg:mb-4 flex flex-col bg-white relative reveal-up" style="transition-delay: 0.1s;">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                            <span class="bg-brand-600 text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg whitespace-nowrap">High Frequency Compute</span>
+                        </div>
+                        <div class="flex justify-between items-start mb-6 border-b border-gray-100 pb-6 mt-2">
+                            <div>
+                                <h3 class="text-2xl font-extrabold text-corporate-900 leading-none mb-2">AMD Ryzen™ 9 5900X</h3>
+                                <p class="text-slate-500 font-mono text-sm">12 Cores / 24 Threads @ 3.70 GHz Base</p>
+                            </div>
+                            <div class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded border border-yellow-200 uppercase whitespace-nowrap">Low Stock</div>
+                        </div>
+                        <div class="text-4xl font-extrabold text-brand-600 mb-8"><span class="curr-sym">$</span><span class="dynamic-price" data-base-price="189.00">189.00</span><span class="text-lg text-slate-400 font-normal">/mo</span></div>
+                        <ul class="space-y-4 mb-10 text-slate-700 flex-grow font-medium">
+                            <li class="flex items-center"><svg class="w-5 h-5 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong>64 GB</strong> DDR4 ECC 3200MHz RAM</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong>2x 1TB</strong> NVMe Gen4 (Software RAID 1)</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-brand-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong>30 TB</strong> Premium Outbound Bandwidth</li>
+                        </ul>
+                        <button class="interactive-btn w-full py-4 bg-brand-600 text-white font-bold rounded-xl hover:bg-brand-700 transition shadow-lg mt-auto" onclick="showSystemToast('AMD Ryzen machine is being prepared for boot...', 'success')">Provision Hardware</button>
+                    </div>
+                    
+                    <!-- Dedi 3 -->
+                    <div class="border border-slate-200 rounded-2xl p-8 hover:border-corporate-900 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col bg-slate-50 reveal-up" style="transition-delay: 0.2s;">
+                        <div class="flex justify-between items-start mb-6 border-b border-slate-200 pb-6">
+                            <div>
+                                <h3 class="text-2xl font-extrabold text-corporate-900 leading-none mb-2">Dual AMD EPYC™ 7302</h3>
+                                <p class="text-slate-500 font-mono text-sm">32 Cores / 64 Threads Total @ 3.00 GHz</p>
+                            </div>
+                            <div class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded border border-emerald-200 uppercase">Available</div>
+                        </div>
+                        <div class="text-4xl font-extrabold text-corporate-900 mb-8"><span class="curr-sym">$</span><span class="dynamic-price" data-base-price="349.00">349.00</span><span class="text-lg text-slate-400 font-normal">/mo</span></div>
+                        <ul class="space-y-4 mb-10 text-slate-700 flex-grow font-medium">
+                            <li class="flex items-center"><svg class="w-5 h-5 text-slate-400 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong>128 GB</strong> DDR4 ECC Registered RAM</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-slate-400 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <strong>4x 1.92TB</strong> Enterprise NVMe (HW RAID 10)</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 text-slate-400 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Included Hardware Firewall</li>
+                        </ul>
+                        <button class="interactive-btn w-full py-4 border-2 border-slate-300 text-corporate-900 font-bold rounded-xl hover:border-corporate-900 hover:text-white transition mt-auto" onclick="showSystemToast('Enterprise Dual EPYC node selected.', 'success')">Provision Hardware</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 5. ENTERPRISE CLOUD (RESTORED K8S UI)      -->
+    <!-- ========================================== -->
+    <main id="page-cloud" class="page-section">
+        <section class="bg-corporate-900 text-white pt-24 pb-20 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-corporate-950 via-transparent to-corporate-950 z-0"></div>
+            <div class="relative z-10 max-w-5xl mx-auto px-4 reveal-up">
+                <span class="bg-brand-400/20 text-brand-200 text-xs px-4 py-1.5 rounded-full uppercase tracking-widest font-bold mb-6 inline-block border border-brand-400/30">Managed Cloud Services</span>
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tighter">Auto-Scaling Cloud Infrastructure</h1>
+                <p class="text-xl text-brand-200 max-w-3xl mx-auto leading-relaxed">Deploy stateless applications across distributed container environments. Managed Kubernetes, Database-as-a-Service, and intelligent Load Balancing built for modern microservices.</p>
+            </div>
+        </section>
+
+        <!-- RESTORED: Cloud Architecture Visualization / Features -->
+        <section class="py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div class="reveal-up">
+                        <h2 class="text-3xl font-extrabold text-corporate-900 mb-6">Managed Kubernetes (XKS)</h2>
+                        <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                            Stop worrying about control plane availability. Xorvila Kubernetes Service (XKS) automatically provisions, upgrades, and secures your clusters. You only pay for the underlying worker nodes you consume.
+                        </p>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start">
+                                <div class="bg-brand-100 p-1 rounded mt-0.5 mr-4"><svg class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="text-slate-700 font-medium">Highly Available Control Plane (Free of charge)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-brand-100 p-1 rounded mt-0.5 mr-4"><svg class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="text-slate-700 font-medium">Native integration with Xorvila Load Balancers</span>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="bg-brand-100 p-1 rounded mt-0.5 mr-4"><svg class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>
+                                <span class="text-slate-700 font-medium">CSI Drivers for automatic Block Storage provisioning</span>
+                            </li>
+                        </ul>
+                        <button class="interactive-btn px-8 py-4 bg-brand-600 text-white font-bold rounded-xl hover:bg-brand-700 transition shadow-lg shadow-brand-600/30" onclick="showSystemToast('Opening K8s Technical Documentation...', 'info')">Read Kubernetes Documentation</button>
+                    </div>
+                    
+                    <div class="bg-slate-50 border border-slate-200 rounded-3xl p-8 relative reveal-up" style="transition-delay: 0.2s;">
+                        <!-- RESTORED: Simulated Kubernetes Terminal/Dashboard -->
+                        <div class="bg-corporate-950 rounded-xl overflow-hidden shadow-2xl">
+                            <div class="bg-corporate-900 px-4 py-2 flex items-center border-b border-slate-700">
+                                <div class="flex space-x-2">
+                                    <div class="w-3 h-3 rounded-full bg-slate-600"></div>
+                                    <div class="w-3 h-3 rounded-full bg-slate-600"></div>
+                                    <div class="w-3 h-3 rounded-full bg-slate-600"></div>
+                                </div>
+                                <div class="text-xs text-slate-400 ml-4 font-mono">user@xorvila-mgmt: ~</div>
+                            </div>
+                            <div class="p-4 font-mono text-sm text-slate-300">
+                                <p class="mb-2"><span class="text-brand-400">$</span> kubectl get nodes -o wide</p>
+                                <p class="text-slate-500 mb-4 text-xs sm:text-sm overflow-x-auto">
+                                    NAME &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; STATUS &nbsp;&nbsp; ROLES &nbsp;&nbsp;&nbsp; AGE &nbsp;&nbsp; VERSION &nbsp;&nbsp; INTERNAL-IP<br>
+                                    <span class="text-white">pool-a-node1</span> Ready &nbsp;&nbsp;&nbsp; &lt;none&gt; &nbsp;&nbsp; 14d &nbsp;&nbsp; v1.28.0 &nbsp;&nbsp; 10.116.0.2<br>
+                                    <span class="text-white">pool-a-node2</span> Ready &nbsp;&nbsp;&nbsp; &lt;none&gt; &nbsp;&nbsp; 14d &nbsp;&nbsp; v1.28.0 &nbsp;&nbsp; 10.116.0.3<br>
+                                    <span class="text-white">pool-b-node1</span> Ready &nbsp;&nbsp;&nbsp; worker &nbsp;&nbsp; 2m &nbsp;&nbsp;&nbsp; v1.28.0 &nbsp;&nbsp; 10.116.0.4
+                                </p>
+                                <p class="mb-2"><span class="text-brand-400">$</span> kubectl scale deployment web-frontend --replicas=5</p>
+                                <p class="text-white mb-4">deployment.apps/web-frontend scaled</p>
+                                <p class="mb-2"><span class="text-brand-400">$</span> <span class="animate-pulse">_</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESTORED: Managed Databases -->
+        <section class="py-24 bg-slate-50 border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 reveal-up">
+                    <h2 class="text-3xl font-extrabold text-corporate-900 mb-4">Managed Database Clusters</h2>
+                    <p class="text-lg text-slate-500 max-w-2xl mx-auto">
+                        Fully managed PostgreSQL, MySQL, and Redis clusters. We handle the replication, failover, updates, and daily backups.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm text-center feature-card interactive-btn cursor-pointer reveal-up" onclick="showSystemToast('PostgreSQL Configurator Loaded.', 'info')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" alt="PostgreSQL" class="w-16 h-16 mx-auto mb-6 opacity-80" />
+                        <h3 class="text-xl font-bold text-corporate-900 mb-2">PostgreSQL</h3>
+                        <p class="text-slate-600 text-sm mb-6">High availability clusters with synchronous replication.</p>
+                        <div class="font-bold text-lg text-corporate-900 mb-4">Starting at <span class="curr-sym">$</span><span class="dynamic-price" data-base-price="15.00">15.00</span>/mo</div>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm text-center feature-card interactive-btn cursor-pointer reveal-up" style="transition-delay: 0.1s;" onclick="showSystemToast('MySQL Enterprise Configurator Loaded.', 'info')">
+                        <svg class="w-16 h-16 mx-auto mb-6 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                        <h3 class="text-xl font-bold text-corporate-900 mb-2">MySQL</h3>
+                        <p class="text-slate-600 text-sm mb-6">Enterprise-grade MySQL deployments engineered for high IOPS.</p>
+                        <div class="font-bold text-lg text-corporate-900 mb-4">Starting at <span class="curr-sym">$</span><span class="dynamic-price" data-base-price="15.00">15.00</span>/mo</div>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm text-center feature-card interactive-btn cursor-pointer reveal-up" style="transition-delay: 0.2s;" onclick="showSystemToast('Redis Cache Cluster Configurator Loaded.', 'info')">
+                        <svg class="w-16 h-16 mx-auto mb-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <h3 class="text-xl font-bold text-corporate-900 mb-2">Redis In-Memory</h3>
+                        <p class="text-slate-600 text-sm mb-6">Lightning fast key-value store caching layer.</p>
+                        <div class="font-bold text-lg text-corporate-900 mb-4">Starting at <span class="curr-sym">$</span><span class="dynamic-price" data-base-price="10.00">10.00</span>/mo</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 6. COMPANY / ABOUT US PAGE (RESTORED INFO) -->
+    <!-- ========================================== -->
+    <main id="page-about" class="page-section">
+        <section class="bg-corporate-900 text-white py-28 text-center relative border-b-4 border-slate-700 reveal-fade">
+            <div class="relative z-10 max-w-4xl mx-auto px-4">
+                <h1 class="text-5xl font-extrabold mb-6">Corporate Overview</h1>
+                <p class="text-xl text-slate-400 max-w-2xl mx-auto">Xorvila Hub was founded with a singular directive: To engineer the most resilient infrastructure on the internet.</p>
+            </div>
+        </section>
+
+        <!-- RESTORED: Deep Company Story & Values -->
+        <section class="py-24 bg-white">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 reveal-up">
+                <div class="prose prose-lg text-slate-600 max-w-none">
+                    <h2 class="text-3xl font-extrabold text-corporate-900 mb-6">A Decade of Infrastructure Excellence</h2>
+                    <p class="mb-6">
+                        Established in 2015, Xorvila Hub began as an internal solution for high-frequency trading firms requiring microsecond latency and absolute zero downtime. We recognized that the broader enterprise market was burdened by opaque pricing, legacy hardware, and unacceptable support tiers from legacy providers.
+                    </p>
+                    <p class="mb-10">
+                        Today, Xorvila Hub operates a proprietary global backbone connecting 12 Tier-4 equivalent data centers. We serve over 50,000 active deployments, ranging from massive multi-national SaaS platforms to critical governmental data repositories. Our continuous reinvestment in NVMe, DDR5, and AMD EPYC architectures ensures our clients always possess a competitive technological advantage.
+                    </p>
+
+                    <h2 class="text-3xl font-extrabold text-corporate-900 mb-8 pt-8 border-t border-slate-200">Executive Core Values</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-8">
+                        <div class="feature-card p-6 bg-slate-50 rounded-xl border border-slate-100">
+                            <h4 class="font-bold text-xl text-brand-600 mb-3 flex items-center">
+                                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                Immutable Security Posture
+                            </h4>
+                            <p class="text-slate-600 text-base">Security is not an add-on; it is our foundation. From kernel-level patches to physical data center perimeters, we maintain rigorous SOC2 compliance.</p>
+                        </div>
+                        <div class="feature-card p-6 bg-slate-50 rounded-xl border border-slate-100">
+                            <h4 class="font-bold text-xl text-brand-600 mb-3 flex items-center">
+                                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Transparent Economics
+                            </h4>
+                            <p class="text-slate-600 text-base">Predictable OPEX. We reject the industry standard of predatory renewal spikes and obfuscated bandwidth egress fees. Pricing is public and flat.</p>
+                        </div>
+                        <div class="feature-card p-6 bg-slate-50 rounded-xl border border-slate-100">
+                            <h4 class="font-bold text-xl text-brand-600 mb-3 flex items-center">
+                                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                Relentless Innovation
+                            </h4>
+                            <p class="text-slate-600 text-base">We aggressively retire hardware exceeding 36 months of lifecycle. Our clients inherit the performance benefits of Moore's Law automatically.</p>
+                        </div>
+                        <div class="feature-card p-6 bg-slate-50 rounded-xl border border-slate-100">
+                            <h4 class="font-bold text-xl text-brand-600 mb-3 flex items-center">
+                                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                Engineering-Led Support
+                            </h4>
+                            <p class="text-slate-600 text-base">Our triage bypasses standard Level-1 scripts. All inquiries route to certified Systems Engineers capable of diagnosing complex stack issues instantly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 7. CONTACT & SUPPORT PAGE (RESTORED FULL)  -->
+    <!-- ========================================== -->
+    <main id="page-contact" class="page-section">
+        <section class="py-24 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 reveal-up">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-corporate-900 mb-6">Global Support & Engineering</h1>
+                    <p class="text-lg text-slate-600 max-w-2xl mx-auto">Operating 24/7/365 across all time zones. Select the appropriate department below to ensure immediate routing of your inquiry.</p>
+                </div>
+
+                <!-- RESTORED: Contact Informational Boxes -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm text-center feature-card reveal-up">
+                        <div class="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-corporate-900 mb-2">Technical NOC</h3>
+                        <p class="text-slate-500 mb-4 text-sm">For active clients requiring immediate infrastructure assistance or mitigation.</p>
+                        <p class="font-bold text-brand-600 mb-1 cursor-pointer hover:underline" onclick="showSystemToast('Email copied to clipboard.', 'info')">support@xorvilahub.com</p>
+                        <p class="text-slate-700 font-mono text-xs mt-2">Current Wait Time: &lt; 5 mins</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm text-center relative overflow-hidden feature-card reveal-up" style="transition-delay: 0.1s;">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-brand-500"></div>
+                        <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-corporate-900 mb-2">Enterprise Sales</h3>
+                        <p class="text-slate-500 mb-4 text-sm">Custom bare-metal quoting, cloud architecture consulting, and SLA inquiries.</p>
+                        <p class="font-bold text-emerald-600 mb-1">+1 (800) 555-0199</p>
+                        <p class="text-slate-700 font-mono text-xs mt-2">Mon-Fri, 9AM-6PM EST</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm text-center feature-card reveal-up" style="transition-delay: 0.2s;">
+                        <div class="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-corporate-900 mb-2">Abuse & Legal</h3>
+                        <p class="text-slate-500 mb-4 text-sm">To report network abuse, DMCA violations, or submit legal subpoenas.</p>
+                        <p class="font-bold text-rose-600 mb-1 cursor-pointer hover:underline" onclick="showSystemToast('Email copied to clipboard.', 'info')">abuse@xorvilahub.com</p>
+                        <p class="text-slate-700 font-mono text-xs mt-2">Monitored 24/7</p>
+                    </div>
+                </div>
+
+                <!-- Contact Form with JS validation/animation -->
+                <div class="max-w-3xl mx-auto bg-white p-10 rounded-3xl border border-slate-200 shadow-xl reveal-up">
+                    <h3 class="text-2xl font-bold text-corporate-900 mb-6 border-b border-slate-100 pb-4">Submit an Inquiry</h3>
+                    <form id="contactForm" class="space-y-6" onsubmit="handleContactSubmit(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Full Name / Corporate Entity</label>
+                                <input type="text" id="contactName" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-shadow" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Work Email Address</label>
+                                <input type="email" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-shadow" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Department</label>
+                            <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-shadow bg-white">
+                                <option>Sales / Architecture Consultation</option>
+                                <option>Technical Support (Existing Clients)</option>
+                                <option>Billing & Account Management</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Message Body</label>
+                            <textarea rows="5" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-shadow" required></textarea>
+                        </div>
+                        <button type="submit" id="submitBtn" class="interactive-btn w-full bg-corporate-900 text-white font-bold py-4 rounded-xl hover:bg-brand-600 transition-colors shadow-lg flex justify-center items-center">
+                            <span id="btnText">Create Support Ticket</span>
+                            <div id="btnSpinner" class="enterprise-loader hidden ml-3 border-t-brand-500"></div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    </div> <!-- End Main Content Wrapper -->
+
+    <!-- ========================================== -->
+    <!-- MEGA ENTERPRISE FOOTER (RESTORED FULL)     -->
+    <!-- ========================================== -->
+    <footer class="bg-corporate-950 pt-20 pb-12 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 lg:gap-8 mb-16">
+                <!-- Brand -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center mb-6">
+                        <div class="flex items-center bg-black px-2 py-1.5 rounded-lg border border-gray-800 shadow-md cursor-pointer interactive-btn" onclick="window.scrollTo(0,0)">
+                            <span class="font-black text-2xl tracking-tight text-white pr-1">Xorvila</span>
+                            <span class="font-black text-2xl tracking-tight text-black bg-[#f90] px-2 py-0.5 rounded-md leading-none">Hub</span>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 mb-8 max-w-sm leading-relaxed text-sm">Providing resilient, high-performance bare metal and cloud infrastructure globally. Built for security, engineered for scale.</p>
+                    
+                    <form class="flex shadow-lg" onsubmit="event.preventDefault(); showSystemToast('Successfully subscribed to Security Bulletins!', 'success'); this.reset();">
+                        <input type="email" placeholder="Enter corporate email" class="bg-corporate-900 border border-slate-700 text-white px-4 py-3 rounded-l-lg focus:outline-none focus:border-brand-500 text-sm w-full transition-colors" required>
+                        <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white px-6 py-3 rounded-r-lg text-sm font-bold transition interactive-btn">Subscribe</button>
+                    </form>
+                </div>
+
+                <!-- RESTORED: Footer Links Columns -->
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-xs">Infrastructure</h4>
+                    <ul class="space-y-3 text-slate-400 text-sm">
+                        <li><a href="#" onclick="navigateTo('dedicated'); return false;" class="hover:text-brand-400 transition-colors">Bare Metal Servers</a></li>
+                        <li><a href="#" onclick="navigateTo('vps'); return false;" class="hover:text-brand-400 transition-colors">Cloud Instances</a></li>
+                        <li><a href="#" onclick="navigateTo('cloud'); return false;" class="hover:text-brand-400 transition-colors">Managed Kubernetes</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors" onclick="showSystemToast('Opening Storage options...', 'info')">Block Storage</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-xs">Solutions</h4>
+                    <ul class="space-y-3 text-slate-400 text-sm">
+                        <li><a href="#" onclick="navigateTo('shared'); return false;" class="hover:text-brand-400 transition-colors">SME Shared Hosting</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors" onclick="showSystemToast('Opening eCommerce setups...', 'info')">E-Commerce Hosting</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors" onclick="showSystemToast('Opening Agency details...', 'info')">Agency Reseller Plans</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors" onclick="showSystemToast('Opening SaaS architecture...', 'info')">SaaS Architecture</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-xs">Corporate</h4>
+                    <ul class="space-y-3 text-slate-400 text-sm">
+                        <li><a href="#" onclick="navigateTo('about'); return false;" class="hover:text-brand-400 transition-colors">About Xorvila Hub</a></li>
+                        <li><a href="#" onclick="navigateTo('home'); return false;" class="hover:text-brand-400 transition-colors">Global Network Map</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors" onclick="showSystemToast('Loading Careers portal...', 'info')">Careers & Culture</a></li>
+                        <li><a href="#" onclick="navigateTo('contact'); return false;" class="hover:text-brand-400 transition-colors">Contact Sales</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-6 uppercase tracking-widest text-xs">Resources</h4>
+                    <ul class="space-y-3 text-slate-400 text-sm">
+                        <li><a href="#" class="hover:text-brand-400 transition-colors flex items-center" onclick="showSystemToast('Opening Developer API Docs...', 'info')">API Docs <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors flex items-center" onclick="showSystemToast('All services online.', 'success')">System Status <span class="w-2 h-2 rounded-full bg-emerald-500 ml-2 animate-pulse"></span></a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-brand-400 transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
+                <p>&copy; 2026 Xorvila Hub Infrastructure Solutions LLC. All rights reserved globally.</p>
+                <div class="flex items-center space-x-6 mt-4 md:mt-0">
+                    <span class="flex items-center"><svg class="w-4 h-4 mr-2 text-slate-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"></path></svg> SOC2 Compliant</span>
+                    <span class="flex items-center"><svg class="w-4 h-4 mr-2 text-slate-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg> Global Backbone</span>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <!-- MODALS & TOASTS -->
-    <div id="login-modal" class="fixed inset-0 z-[1000] hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 animate-in zoom-in-95">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-slate-900">Secure Access</h2>
-                <button onclick="closeModal('login-modal')" class="text-slate-400 hover:text-slate-900 bg-slate-100 p-2 rounded-full w-8 h-8 flex items-center justify-center"><i class="fas fa-times"></i></button>
-            </div>
-            <form onsubmit="handleLogin(event)" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Student ID / Email</label>
-                    <input required type="text" class="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none transition-all font-medium" placeholder="student@edupro.com">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Password</label>
-                    <input required type="password" class="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none transition-all font-medium" placeholder="••••••••">
-                </div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-600/30 transition-all mt-4 text-lg">Authenticate</button>
-            </form>
-        </div>
-    </div>
+    <!-- Toast Notification Container (Bottom Right) -->
+    <div id="toast-container"></div>
 
-    <div id="toast-container" class="fixed bottom-5 right-5 z-[9999] transition-transform transform translate-y-20 opacity-0 pointer-events-none">
-        <div id="toast-body" class="px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3 text-white bg-blue-600">
-            <i class="fas fa-check-circle text-xl"></i>
-            <span id="toast-msg" class="font-medium">Message</span>
-        </div>
-    </div>
-
-    <!-- PURE VANILLA JAVASCRIPT LOGIC -->
+    <!-- ========================================== -->
+    <!-- INTERACTIVE JAVASCRIPT (ANIMATIONS & LOGIC)-->
+    <!-- ========================================== -->
     <script>
-        // --- 🚀 REAL PDF GENERATOR USING jsPDF ---
-        function generateRealPDF(fileName, type) {
-            showToast(`Generating REAL PDF: ${fileName}...`, 'info');
+        // 1. Scroll Animations Setup (Intersection Observer)
+        document.addEventListener("DOMContentLoaded", () => {
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-up, .reveal-fade').forEach(el => observer.observe(el));
+        });
+
+        // 2. Custom Toast Notification System
+        function showSystemToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-item`;
             
-            // Check if jsPDF loaded
-            if (!window.jspdf) {
-                showToast('Error: PDF Engine not loaded. Check internet.', 'error');
-                return;
-            }
+            let iconHtml = type === 'success' 
+                ? `<svg class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`
+                : `<svg class="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            // Set Brand Header
-            doc.setFillColor(37, 99, 235); // Blue primary color
-            doc.rect(0, 0, 210, 30, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(22);
-            doc.setFont("helvetica", "bold");
-            doc.text("EduPro - Official Document", 15, 20);
-
-            doc.setTextColor(15, 23, 42); // Dark slate
-            doc.setFontSize(16);
-
-            // Generate content based on the 'type' of button clicked
-            if (type === 'formula') {
-                doc.text("Master Formula Book (Math & Science)", 15, 45);
-                
-                doc.setFontSize(14);
-                doc.setTextColor(37, 99, 235);
-                doc.text("1. Mathematics - Core Formulas", 15, 60);
-                
-                doc.setTextColor(50, 50, 50);
-                doc.setFontSize(12);
-                doc.setFont("helvetica", "normal");
-                doc.text("• Quadratic Formula: x = (-b ± √(b² - 4ac)) / 2a", 20, 70);
-                doc.text("• Pythagorean Theorem: a² + b² = c²", 20, 80);
-                doc.text("• Area of a Circle: A = πr²", 20, 90);
-                doc.text("• Trigonometry Identity: sin²(θ) + cos²(θ) = 1", 20, 100);
-
-                doc.setFontSize(14);
-                doc.setFont("helvetica", "bold");
-                doc.setTextColor(37, 99, 235);
-                doc.text("2. Physics - Fundamental Laws", 15, 120);
-                
-                doc.setTextColor(50, 50, 50);
-                doc.setFontSize(12);
-                doc.setFont("helvetica", "normal");
-                doc.text("• Newton's Second Law: F = m * a (Force = Mass x Acceleration)", 20, 130);
-                doc.text("• Work-Energy Theorem: W = ΔK (Work done = Change in Kinetic Energy)", 20, 140);
-                doc.text("• Ohm's Law: V = I * R (Voltage = Current x Resistance)", 20, 150);
-                doc.text("• Power Equation: P = W / t (Power = Work / Time)", 20, 160);
-            } 
-            else if (type === 'papers') {
-                doc.text("Previous Year Board Questions (Archive)", 15, 45);
-                
-                doc.setFontSize(12);
-                doc.setFont("helvetica", "bold");
-                doc.text("Section A: Science (Class 10)", 15, 60);
-                
-                doc.setFont("helvetica", "normal");
-                doc.text("Q1. What happens when dilute hydrochloric acid is added to iron filings?", 15, 70);
-                doc.text("    Ans: Hydrogen gas and iron chloride are produced.", 15, 78);
-                
-                doc.text("Q2. Why do stars twinkle but planets do not?", 15, 90);
-                doc.text("    Ans: Due to atmospheric refraction of starlight.", 15, 98);
-                
-                doc.setFont("helvetica", "bold");
-                doc.text("Section B: Mathematics", 15, 115);
-                doc.setFont("helvetica", "normal");
-                doc.text("Q3. Find the roots of the quadratic equation 2x² - x + 1/8 = 0.", 15, 125);
-                doc.text("Q4. Prove that the lengths of tangents drawn from an external point", 15, 140);
-                doc.text("    to a circle are equal.", 15, 148);
-            }
-            else if (type === 'syllabus') {
-                doc.text("Detailed Class Syllabus 2026-27", 15, 45);
-                
-                doc.setFontSize(12);
-                doc.text("Unit I: Chemical Substances - Nature and Behaviour", 15, 60);
-                doc.text("Unit II: World of Living", 15, 75);
-                doc.text("Unit III: Natural Phenomena", 15, 90);
-                doc.text("Unit IV: Effects of Current", 15, 105);
-                doc.text("Unit V: Natural Resources", 15, 120);
-                
-                doc.setFont("helvetica", "italic");
-                doc.text("Note: Complete all assignments before the term end.", 15, 140);
-            }
-            else if (type === 'notes') {
-                doc.text("Chapter Notes: Fundamentals & Principles", 15, 45);
-                doc.setFontSize(11);
-                doc.setFont("helvetica", "normal");
-                const textLines = doc.splitTextToSize("A cell is defined as the smallest, basic unit of life that is responsible for all of life's processes. Cells are the structural, functional, and biological units of all living beings. A cell can replicate itself independently. Hence, they are known as the building blocks of life.", 180);
-                doc.text(textLines, 15, 60);
-            }
-
-            // Footer
-            doc.setFontSize(10);
-            doc.setTextColor(150, 150, 150);
-            doc.text("Generated by EduPro Premium LMS - Authentic Material", 15, 280);
-
-            // Execute Download
+            toast.innerHTML = `
+                ${iconHtml}
+                <div class="flex-1">
+                    <h4 class="font-bold text-corporate-900 text-sm mb-0.5">System Notice</h4>
+                    <p class="text-slate-600 text-xs">${message}</p>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-700 transition interactive-btn">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            `;
+            
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
             setTimeout(() => {
-                doc.save(fileName);
-                showToast(`${fileName} downloaded successfully!`, 'success');
-            }, 800);
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
         }
 
-        // --- QUESTION BANK & LOGIC ---
-        const allQuestionsBank = [
-            { category: "Science", q: "What gas do plants absorb during photosynthesis?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], ans: 1 },
-            { category: "Physics", q: "What is the SI unit of Force?", options: ["Joule", "Pascal", "Watt", "Newton"], ans: 3 },
-            { category: "Chemistry", q: "What is the pH value of pure water?", options: ["0", "7", "14", "10"], ans: 1 },
-            { category: "Mathematics", q: "Solve for x: 2x + 5 = 15", options: ["5", "10", "20", "2.5"], ans: 0 },
-            { category: "Mathematics", q: "What is the value of Pi (approx)?", options: ["3.14", "3.12", "3.16", "3.18"], ans: 0 },
-            { category: "English", q: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"], ans: 1 },
-            { category: "Biology", q: "How many bones are there in an adult human body?", options: ["206", "208", "210", "212"], ans: 0 },
-            { category: "GK", q: "Which is the largest planet in our solar system?", options: ["Earth", "Mars", "Jupiter", "Saturn"], ans: 2 }
-        ];
-
-        let currentQuizQuestions = []; let currentQIndex = 0; let quizScore = 0; let timeLeft = 300;
-        let userLoggedIn = false; let quizTimerInterval; let videoInterval;
-
-        // --- NAVIGATION ---
-        function navigateTo(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
+        // 3. Dynamic Currency Switcher
+        let currentMultiplier = 1;
+        let currentSymbol = '$';
+        
+        function changeCurrency(currCode) {
+            const multipliers = { 'USD': 1, 'EUR': 0.92, 'GBP': 0.79 };
+            const symbols = { 'USD': '$', 'EUR': '€', 'GBP': '£' };
             
-            document.querySelectorAll('.nav-link').forEach(el => {
-                if (el.getAttribute('data-target') === viewId) { el.classList.add('text-blue-600'); el.classList.remove('text-slate-500'); } 
-                else { el.classList.remove('text-blue-600'); el.classList.add('text-slate-500'); }
+            currentMultiplier = multipliers[currCode];
+            currentSymbol = symbols[currCode];
+
+            document.querySelectorAll('.currency-btn').forEach(btn => {
+                btn.classList.remove('text-white', 'font-bold');
+            });
+            document.getElementById(`curr-${currCode.toLowerCase()}`).classList.add('text-white', 'font-bold');
+
+            document.querySelectorAll('.dynamic-price').forEach(el => {
+                const basePrice = parseFloat(el.getAttribute('data-base-price'));
+                const newPrice = (basePrice * currentMultiplier).toFixed(2);
+                
+                el.style.opacity = 0;
+                setTimeout(() => {
+                    el.innerText = newPrice;
+                    el.style.opacity = 1;
+                }, 200);
             });
 
-            document.getElementById('mobile-menu').classList.add('hidden');
-            document.getElementById('mobile-menu-icon').className = 'fas fa-bars text-2xl';
+            document.querySelectorAll('.curr-sym').forEach(el => {
+                el.innerText = currentSymbol;
+            });
 
-            if(viewId === 'classes') renderSubjects('9-10');
-            window.scrollTo(0, 0);
-            clearInterval(quizTimerInterval); clearInterval(videoInterval);
+            showSystemToast(`Global pricing updated to ${currCode} currency.`, 'info');
         }
+
+        // 4. OS Selection Logic (VPS Page)
+        function selectOS(btnElement, osName) {
+            document.querySelectorAll('.os-btn').forEach(btn => {
+                btn.classList.remove('border-2', 'border-brand-500', 'bg-brand-50', 'text-brand-700');
+                btn.classList.add('border', 'border-gray-200', 'text-slate-600');
+            });
+            btnElement.classList.remove('border', 'border-gray-200', 'text-slate-600');
+            btnElement.classList.add('border-2', 'border-brand-500', 'bg-brand-50', 'text-brand-700');
+            
+            showSystemToast(`${osName} image selected for active deployment.`, 'info');
+        }
+
+        // 5. Contact Form Simulation (Loading -> Success)
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+            const form = document.getElementById('contactForm');
+            const name = document.getElementById('contactName').value;
+
+            btnText.innerText = "Processing Details...";
+            btnSpinner.classList.remove('hidden');
+            
+            setTimeout(() => {
+                btnText.innerText = "Create Support Ticket";
+                btnSpinner.classList.add('hidden');
+                form.reset();
+                showSystemToast(`Ticket generated for ${name}. Our technical engineers will email you shortly.`, 'success');
+            }, 2000);
+        }
+
+        // 6. SPA Routing Logic with animations
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.getElementById('page-' + pageId);
+            if(targetPage) targetPage.classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(link => {
+                link.classList.remove('text-brand-600', 'border-brand-600');
+                link.classList.add('text-slate-600', 'border-transparent');
+            });
+            const activeNav = document.getElementById('nav-' + pageId);
+            if(activeNav) {
+                activeNav.classList.remove('text-slate-600', 'border-transparent');
+                activeNav.classList.add('text-brand-600', 'border-brand-600');
+            }
+            
+            // Re-trigger scroll animations manually for newly visible elements
+            setTimeout(() => {
+                targetPage.querySelectorAll('.reveal-up, .reveal-fade').forEach(el => {
+                    el.classList.add('visible');
+                });
+            }, 100);
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 7. Mobile Menu Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const iconOpen = document.getElementById('menu-icon-open');
+        const iconClose = document.getElementById('menu-icon-close');
 
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const icon = document.getElementById('mobile-menu-icon');
-            if (menu.classList.contains('hidden')) { menu.classList.remove('hidden'); icon.className = 'fas fa-times text-2xl'; } 
-            else { menu.classList.add('hidden'); icon.className = 'fas fa-bars text-2xl'; }
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                iconOpen.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+                iconClose.classList.add('block');
+            } else {
+                mobileMenu.classList.add('hidden');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.remove('block');
+                iconClose.classList.add('hidden');
+            }
         }
+        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
 
-        const classesData = {
-            '1-5': [{ name: 'Maths Magic', icon: 'fa-calculator', chapters: 12 }, { name: 'Environmental Studies', icon: 'fa-leaf', chapters: 15 }],
-            '6-8': [{ name: 'Mathematics', icon: 'fa-square-root-variable', chapters: 16 }, { name: 'Science', icon: 'fa-microscope', chapters: 18 }],
-            '9-10': [{ name: 'Mathematics', icon: 'fa-calculator', chapters: 15 }, { name: 'Physics', icon: 'fa-magnet', chapters: 7 }, { name: 'Chemistry', icon: 'fa-flask', chapters: 6 }],
-            '11-12': [{ name: 'Physics (Vol 1 & 2)', icon: 'fa-meteor', chapters: 14 }, { name: 'Mathematics', icon: 'fa-calculator', chapters: 13 }]
-        };
+        // 8. Shared Hosting Pricing Toggle
+        let isYearlyShared = false;
+        function toggleBilling(section) {
+            if(section === 'shared') {
+                isYearlyShared = !isYearlyShared;
+                const ball = document.getElementById('shared-toggle-ball');
+                const btn = document.getElementById('shared-toggle-btn');
+                const moLabel = document.getElementById('shared-mo-label');
+                const yrLabel = document.getElementById('shared-yr-label');
+                const prices = document.querySelectorAll('.shared-price-val');
 
-        const mockChapters = [
-            { id: 1, title: "1. Fundamentals & Introduction", duration: "45 mins", done: true },
-            { id: 2, title: "2. Core Principles & Theories", duration: "55 mins", done: true },
-            { id: 3, title: "3. Advanced Applications", duration: "1 hr 10 mins", done: false }
-        ];
-
-        function renderSubjects(classId) {
-            document.querySelectorAll('.class-tab').forEach(el => {
-                if(el.getAttribute('data-id') === classId) el.className = 'class-tab px-4 py-2 rounded-lg font-bold text-sm bg-slate-900 text-white';
-                else el.className = 'class-tab px-4 py-2 rounded-lg font-bold text-sm bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer';
-            });
-            const container = document.getElementById('subjects-container'); container.innerHTML = '';
-            classesData[classId].forEach(sub => {
-                const div = document.createElement('div');
-                div.className = 'bg-white rounded-3xl border border-slate-200 p-6 shadow-sm hover:shadow-lg hover:border-blue-300 transition-all flex flex-col';
-                div.innerHTML = `
-                    <div class="flex justify-between items-start mb-6">
-                        <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center border border-blue-100"><i class="fas ${sub.icon} text-2xl"></i></div>
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-2">${sub.name}</h3>
-                    <p class="text-slate-500 text-sm mb-8 flex items-center"><i class="fas fa-book mr-2"></i> ${sub.chapters} Chapters Available</p>
-                    <button onclick="openSubjectDetail('${sub.name}')" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition-colors flex justify-center items-center mt-auto">Open Subject <i class="fas fa-chevron-right ml-2"></i></button>
-                `;
-                container.appendChild(div);
-            });
+                if(isYearlyShared) {
+                    ball.classList.replace('translate-x-1', 'translate-x-8');
+                    btn.classList.replace('bg-slate-300', 'bg-brand-600');
+                    moLabel.classList.replace('text-corporate-900', 'text-slate-500');
+                    yrLabel.classList.replace('text-slate-500', 'text-corporate-900');
+                    
+                    prices.forEach(el => {
+                        el.style.opacity = 0;
+                        setTimeout(() => {
+                            el.setAttribute('data-base-price', el.getAttribute('data-yr'));
+                            el.innerText = (parseFloat(el.getAttribute('data-yr')) * currentMultiplier).toFixed(2);
+                            el.style.opacity = 1;
+                        }, 150);
+                    });
+                    showSystemToast('Switched to Annual Billing (25% Savings applied).', 'info');
+                } else {
+                    ball.classList.replace('translate-x-8', 'translate-x-1');
+                    btn.classList.replace('bg-brand-600', 'bg-slate-300');
+                    moLabel.classList.replace('text-slate-500', 'text-corporate-900');
+                    yrLabel.classList.replace('text-corporate-900', 'text-slate-500');
+                    
+                    prices.forEach(el => {
+                        el.style.opacity = 0;
+                        setTimeout(() => {
+                            el.setAttribute('data-base-price', el.getAttribute('data-mo'));
+                            el.innerText = (parseFloat(el.getAttribute('data-mo')) * currentMultiplier).toFixed(2);
+                            el.style.opacity = 1;
+                        }, 150);
+                    });
+                    showSystemToast('Switched to standard Monthly Billing.', 'info');
+                }
+            }
         }
+        
+        // 9. Domain Search Logic
+        function searchDomain() {
+            const input = document.getElementById('domainInput').value.trim();
+            if(!input) return;
+            const btn = document.getElementById('searchDomainBtn');
+            const icon = document.getElementById('searchIcon');
+            const loading = document.getElementById('loadingIcon');
+            const resultArea = document.getElementById('domainResultArea');
 
-        function openSubjectDetail(name) {
-            document.getElementById('subject-title').innerText = name + " Curriculum";
-            const container = document.getElementById('chapters-container'); container.innerHTML = '';
-            mockChapters.forEach(chap => {
-                const div = document.createElement('div');
-                div.className = 'bg-white border border-slate-200 p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between hover:border-blue-600 transition-colors gap-4';
-                let iconHTML = chap.done ? `<i class="fas fa-check-square"></i>` : `<i class="fas fa-lock"></i>`;
-                let iconColor = chap.done ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-400';
-                div.innerHTML = `
-                    <div class="flex items-center space-x-4">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-xl ${iconColor}">${iconHTML}</div>
-                        <div><h4 class="font-bold text-slate-900 text-lg leading-tight">${chap.title}</h4><p class="text-sm text-slate-500 flex items-center mt-1"><i class="fas fa-clock mr-1"></i> ${chap.duration}</p></div>
-                    </div>
-                    <div class="flex space-x-3 w-full md:w-auto">
-                        <button onclick="generateRealPDF('Notes_${chap.title}.pdf', 'notes')" class="flex-1 md:flex-none p-3 flex justify-center text-slate-600 hover:text-blue-600 border border-slate-200 rounded-xl hover:bg-blue-50 hover:border-blue-200"><i class="fas fa-file-alt text-xl"></i></button>
-                        <button onclick="openVideo('${chap.title}')" class="flex-grow md:flex-grow-0 px-6 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 flex items-center justify-center whitespace-nowrap"><i class="fas fa-play-circle mr-2"></i> Watch Lecture</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-            navigateTo('subject');
-        }
+            btn.disabled = true; icon.classList.add('hidden'); loading.classList.remove('hidden'); resultArea.classList.add('hidden');
 
-        // --- VIDEO ---
-        let isVideoPlaying = false; let videoProgress = 0;
-        function openVideo(title) { document.getElementById('video-title').innerText = title; isVideoPlaying = false; videoProgress = 0; updateVideoUI(); navigateTo('video'); }
-        function toggleVideo() {
-            isVideoPlaying = !isVideoPlaying;
-            if(isVideoPlaying) {
-                videoInterval = setInterval(() => {
-                    videoProgress += 1; if(videoProgress > 100) videoProgress = 0;
-                    document.getElementById('video-progress').style.width = videoProgress + '%';
-                    let secs = Math.floor((videoProgress / 100) * (45 * 60));
-                    document.getElementById('video-time').innerText = `${Math.floor(secs / 60).toString().padStart(2,'0')}:${(secs % 60).toString().padStart(2,'0')} / 45:00`;
-                }, 1000);
-            } else { clearInterval(videoInterval); }
-            updateVideoUI();
-        }
-        function updateVideoUI() {
-            if(isVideoPlaying) { document.getElementById('video-overlay').classList.add('hidden'); document.getElementById('video-playing').classList.remove('hidden'); document.getElementById('video-btn-icon').className = 'fas fa-pause text-xl hover:text-blue-400'; } 
-            else { document.getElementById('video-overlay').classList.remove('hidden'); document.getElementById('video-playing').classList.add('hidden'); document.getElementById('video-btn-icon').className = 'fas fa-play text-xl hover:text-blue-400'; }
-        }
+            setTimeout(() => {
+                btn.disabled = false; icon.classList.remove('hidden'); loading.classList.add('hidden');
+                const isAvailable = Math.random() > 0.4;
+                const ext = input.includes('.') ? '' : '.com';
+                const finalName = input.toLowerCase() + ext;
+                
+                showSystemToast(`Registry query completed for ${finalName}.`, 'info');
 
-        // --- QUIZ ---
-        function startQuiz(categoryFilter = null) {
-            let pool = allQuestionsBank;
-            if (categoryFilter && categoryFilter !== 'Mixed') { pool = allQuestionsBank.filter(q => q.category === categoryFilter || (categoryFilter==='Science' && (q.category==='Physics'||q.category==='Chemistry'))); }
-            currentQuizQuestions = [...pool].sort(() => 0.5 - Math.random()).slice(0, 5);
-            currentQIndex = 0; quizScore = 0; timeLeft = 300;
-            renderQuestion(); navigateTo('quiz');
-            quizTimerInterval = setInterval(() => {
-                timeLeft--;
-                if(timeLeft <= 0) { clearInterval(quizTimerInterval); finishQuiz(); } 
-                else { document.getElementById('quiz-timer').innerText = `${Math.floor(timeLeft / 60).toString().padStart(2,'0')}:${(timeLeft % 60).toString().padStart(2,'0')}`; }
-            }, 1000);
+                let html = isAvailable ? `
+                    <div class="flex flex-col sm:flex-row justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-1 flex items-center">
+                                <div class="bg-emerald-500/20 p-1 rounded-full mr-3"><svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>
+                                ${finalName} is available!
+                            </h3>
+                            <p class="text-slate-400 text-sm ml-10">Secure this asset for your corporate portfolio immediately.</p>
+                        </div>
+                        <div class="mt-5 sm:mt-0 flex items-center gap-6">
+                            <div class="text-right">
+                                <span class="block text-2xl font-black text-white">${currentSymbol}${(10.99 * currentMultiplier).toFixed(2)}</span>
+                            </div>
+                            <button class="interactive-btn bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-lg font-bold shadow-lg transition-colors" onclick="showSystemToast('${finalName} added to cart payload.', 'success')">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>` : `
+                    <div class="flex items-center">
+                        <div class="bg-rose-500/20 p-2 rounded-full mr-4"><svg class="w-6 h-6 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-1">${finalName} is already registered by another entity.</h3>
+                            <p class="text-slate-400 text-sm">Our enterprise brokerage team can attempt to acquire this domain on your behalf.</p>
+                        </div>
+                    </div>`;
+                resultArea.innerHTML = html; resultArea.classList.remove('hidden');
+            }, 1800);
         }
-
-        function renderQuestion() {
-            const q = currentQuizQuestions[currentQIndex];
-            document.getElementById('quiz-counter').innerHTML = `Question ${currentQIndex + 1} <span class="text-slate-400">of ${currentQuizQuestions.length}</span>`;
-            document.getElementById('quiz-question').innerText = q.q;
-            document.getElementById('q-category-tag').innerText = q.category;
-            document.getElementById('quiz-progress-bar').style.width = ((currentQIndex) / currentQuizQuestions.length) * 100 + '%';
-            const optsContainer = document.getElementById('quiz-options'); optsContainer.innerHTML = '';
-            const labels = ['A', 'B', 'C', 'D'];
-            q.options.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'w-full text-left p-5 rounded-2xl border-2 transition-all font-semibold text-lg flex items-center border-slate-100 hover:border-blue-400 hover:bg-slate-50 text-slate-700 opt-btn';
-                btn.onclick = () => handleAnswer(index, btn);
-                btn.innerHTML = `<span class="inline-block w-10 h-10 rounded-xl text-center leading-10 mr-4 font-bold shrink-0 transition-colors bg-slate-100 text-slate-500 opt-label">${labels[index]}</span> ${opt}`;
-                optsContainer.appendChild(btn);
-            });
-        }
-
-        function handleAnswer(selectedIndex, btnElement) {
-            document.querySelectorAll('.opt-btn').forEach(btn => btn.style.pointerEvents = 'none'); 
-            btnElement.classList.replace('border-slate-100', 'border-blue-600'); btnElement.classList.replace('hover:bg-slate-50', 'bg-blue-50');
-            btnElement.querySelector('.opt-label').classList.replace('bg-slate-100', 'bg-blue-600'); btnElement.querySelector('.opt-label').classList.replace('text-slate-500', 'text-white');
-            if(selectedIndex === currentQuizQuestions[currentQIndex].ans) quizScore++;
-            setTimeout(() => { currentQIndex++; if(currentQIndex < currentQuizQuestions.length) renderQuestion(); else finishQuiz(); }, 600);
-        }
-
-        function finishQuiz() {
-            clearInterval(quizTimerInterval);
-            document.getElementById('result-score').innerText = quizScore; document.getElementById('result-total').innerText = `/ ${currentQuizQuestions.length}`;
-            let accuracy = (quizScore / currentQuizQuestions.length) * 100;
-            document.getElementById('result-accuracy').innerText = `Accuracy: ${accuracy}%`;
-            const colorBar = document.getElementById('result-color-bar');
-            if(accuracy >= 80) colorBar.className = 'absolute top-0 left-0 w-full h-2 bg-green-500'; else if(accuracy >= 50) colorBar.className = 'absolute top-0 left-0 w-full h-2 bg-yellow-500'; else colorBar.className = 'absolute top-0 left-0 w-full h-2 bg-red-500';
-            navigateTo('quiz-result');
-        }
-
-        // --- UTILS ---
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function showToast(msg, type='success') {
-            const toast = document.getElementById('toast-container'); const toastBody = document.getElementById('toast-body'); document.getElementById('toast-msg').innerText = msg;
-            if(type === 'success') toastBody.className = 'px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3 text-white bg-blue-600'; else if (type === 'info') toastBody.className = 'px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3 text-white bg-slate-800'; else toastBody.className = 'px-6 py-4 rounded-xl shadow-2xl flex items-center space-x-3 text-white bg-red-600';
-            toast.classList.remove('translate-y-20', 'opacity-0'); setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
-        }
-        function handleLogin(e) { e.preventDefault(); closeModal('login-modal'); showToast('Authentication Successful! Access Granted.'); }
     </script>
 </body>
 </html>
-
-
